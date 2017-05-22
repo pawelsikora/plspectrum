@@ -10,6 +10,9 @@ random.seed()
 import linecache
 #from sympy.mpmath import *
 
+__author__ = "Piotr Ruszala"
+__version__ = "0.1"
+
 def Schodek(x):
 	Y=np.zeros(len(x))
 	for i in range(0,len(x)):
