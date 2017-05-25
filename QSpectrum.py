@@ -9,16 +9,11 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy as sp
 from scipy import signal
-import random
-random.seed()
 import linecache
 #from sympy.mpmath import *
 
 __author__ = "Piotr Ruszala"
 __version__ = "0.1"
-
-k = 8.617*10**(-5)
-T = 300.0
 
 class Parameters:	
 	def __init__(self):
@@ -108,23 +103,19 @@ class Parameters:
 		
 class Spectrum_generator(Parameters):
 
-	Widmo1 = 0
-	Widmo2 = 0
-	Widmo5 = []
+	Widmo_fd = 0
+	Widmo_b = 0
+	Widmo_p = []
 	Widmo = []
 	widmo = 0
 	delta = 0
 	
 	def __init__(self):
 		Parameters.__init__(self)
-		#Params = Parameters()
 		Parameters.update(self)
 		
-	def delta_cal(self):
-		
+	def delta_cal(self):	
 		for i in range(0, len(self.En)):
-			#Energia=Energia+En[i]
-			#self.DOS = self.DOS + self.g0 * self.CP[i] * (DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
 			self.DOS = self.DOS + self.g0 * self.CP[i] * (DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
 			self.DOS2 = self.DOS2 + self.g0 * self.CP[i] * (DOS_rozmyty_cauchy(self.E, self.Eg + self.En[i], self.gamma_schodek))
 			self.Hevisajd = self.Hevisajd + self.g0 * self.CP[i] * Schodek(self.E-self.Eg-self.En[i])
@@ -140,15 +131,14 @@ class Spectrum_generator(Parameters):
 				self.Epocz[i]=0.0
 			else:
 				self.Epocz[i]=1.0
-	def widmo1(self):
-		self.Widmo1 = self.Pik * self.DOS * distribution_FD(self.E, self.Ef, self.T, self.k)
+	def widmo_fd(self):
+		self.Widmo_fd = self.Pik * self.DOS * distribution_FD(self.E, self.Ef, self.T, self.k)
 	
-	def widmo2(self):
-		self.Widmo2 = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.E, self.T, self.k)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
+	def widmo_boltzmann(self):
+		self.Widmo_b = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.E, self.T, self.k)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
 
-	def widmo5(self):
+	def widmo_planck(self):
 		self.Widmo5 = (1.0 / self.E) * self.DOS * distribution_Planck(self.E, self.T, self.k) * self.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
-		#print Widmo5
 
 	def prawdopodobienstwo(self):
 		for j in range(0, len(self.En)):
@@ -185,9 +175,9 @@ class Spectrum_generator(Parameters):
 	def all(self):
 		self.delta_cal()
 		self.energia_pocz()
-		self.widmo1()
-		self.widmo2()
-		self.widmo5()
+		self.widmo_fd()
+		self.widmo_boltzmann()
+		self.widmo_planck()
 		self.prawdopodobienstwo()
 		self.widmo()
 		self.save_to_files()
