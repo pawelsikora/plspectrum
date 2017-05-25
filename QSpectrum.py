@@ -3,7 +3,7 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
-
+from common import *
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -106,65 +106,7 @@ class Parameters:
 	def update(self):
 		return 0
 		
-
-class Common:
-
-	def __init__(self):
-		print "Common init"
-
-	def Schodek(self, x):
-		Y = np.zeros(len(x))
-		for i in range(0,len(x)):
-			if float(x[i]) < 0.0:
-				Y[i] = 0.0
-			elif float(x[i]) >= 0.0:
-				Y[i] = 1.0
-		return Y
-
-	def Delta(self, x):
-		Y = np.zeros(len(x))
-		for i in range(0,len(x)):
-			if x[i] >= -0.0005 and x[i]<=0.0005:
-				Y[i] = 1.0
-		return Y
-
-	def Calka(self, arg,fun):
-		C = 0
-		for i in range(0,len(arg)-1):
-			C = C + (0.5 * (arg[i+1] - arg[i]) * (fun[i+1] + fun[i]))
-		return C
-
-	def DOS_rozmyty_erf(self, Ene, E_prz, W): #Rozmyte schodki - funkcja bledu erf
-		return 0.5 * (sp.special.erf((Ene-E_prz)*W)+1.0)
-
-	def DOS_rozmyty_cauchy(self, Ene, E_prz, W): #Rozmyte schodki - funkcja dystrybuanty rozkladu Cauchyego
-		return ((1.0 / np.pi) * np.arctan((Ene - E_prz) * W) + 0.5)
-
-	def Ogon_gestosci_stanow(self, Ene, E_prz, Amplituda0, w): #Rozmycie krawedzi absorpcji
-		Y = 0.0
-		if Ene <= E_prz:
-			Y = Amplituda0 * (np.exp((Ene - E_prz) * w ))
-		elif Ene > E_prz:
-			Y = Amplituda0
-		return Y
-
-	def pik_Gaussowski(self, Ene, E_prz, w): #Pik Gaussa - rozklad normalny
-		return ((1.0 / (w * np.sqrt(2.0 * np.pi))) * np.exp( - (((Ene - E_prz)**2)/(2.0 * w**2))))
-
-	def pik_Lorentza(self, Ene, E_prz, w): #Pik Lorentza - rozklad Cauchyego
-		return 1.0 / ((np.pi * w)*(1.0 + ((Ene-  E_prz) / w)**2))
-
-	def distribution_Boltzmann(self, Ek, Ep, T, k):
-		dEne = Ek - Ep
-		return np.exp(dEne / (k * T))
-
-	def distribution_FD(self, Ene, EF, T, k):
-		return (1.0/(np.exp((Ene - EF)/(k * T)) + 1.0))
-
-	def distribution_Planck(self, Ene, T, k):
-		return ((Ene**2)/(np.exp((Ene) / (k * T)) - 1.0))
-
-class Calculate(Parameters):
+class Spectrum_generator(Parameters):
 
 	Widmo1 = 0
 	Widmo2 = 0
@@ -177,20 +119,19 @@ class Calculate(Parameters):
 		Parameters.__init__(self)
 		#Params = Parameters()
 		Parameters.update(self)
-		self.__common = Common()
 		
 	def delta_cal(self):
 		
 		for i in range(0, len(self.En)):
 			#Energia=Energia+En[i]
-			#self.DOS = self.DOS + self.g0 * self.CP[i] * (self.__common.DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
-			self.DOS = self.DOS + self.g0 * self.CP[i] * (self.__common.DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
-			self.DOS2 = self.DOS2 + self.g0 * self.CP[i] * (self.__common.DOS_rozmyty_cauchy(self.E, self.Eg + self.En[i], self.gamma_schodek))
-			self.Hevisajd = self.Hevisajd + self.g0 * self.CP[i] * self.__common.Schodek(self.E-self.Eg-self.En[i])
-			self.Pik = self.Pik + self.A0 * (self.__common.pik_Lorentza(self.E, self.Eg + self.En[i], self.gamma))
-			self.Normal = self.Normal + self.A0 * self.__common.pik_Gaussowski(self.E, self.Eg + self.En[i], self.gamma)
-			self.Pik_mieszany = self.Pik_mieszany + self.A0 * (self.__common.pik_Lorentza(self.E, self.Eg + self.En[i], self.gamma) + self.__common.pik_Gaussowski(self.E, self.Eg+self.En[i], self.gamma))
-			self.Delty=self.Delty+self.A0*self.__common.Delta(self.E-self.Eg-self.En[i])
+			#self.DOS = self.DOS + self.g0 * self.CP[i] * (DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
+			self.DOS = self.DOS + self.g0 * self.CP[i] * (DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
+			self.DOS2 = self.DOS2 + self.g0 * self.CP[i] * (DOS_rozmyty_cauchy(self.E, self.Eg + self.En[i], self.gamma_schodek))
+			self.Hevisajd = self.Hevisajd + self.g0 * self.CP[i] * Schodek(self.E-self.Eg-self.En[i])
+			self.Pik = self.Pik + self.A0 * (pik_Lorentza(self.E, self.Eg + self.En[i], self.gamma))
+			self.Normal = self.Normal + self.A0 * pik_Gaussowski(self.E, self.Eg + self.En[i], self.gamma)
+			self.Pik_mieszany = self.Pik_mieszany + self.A0 * (pik_Lorentza(self.E, self.Eg + self.En[i], self.gamma) + pik_Gaussowski(self.E, self.Eg+self.En[i], self.gamma))
+			self.Delty=self.Delty+self.A0*Delta(self.E-self.Eg-self.En[i])
 
 
 	def energia_pocz(self):
@@ -200,20 +141,20 @@ class Calculate(Parameters):
 			else:
 				self.Epocz[i]=1.0
 	def widmo1(self):
-		self.Widmo1 = self.Pik * self.DOS * self.__common.distribution_FD(self.E, self.Ef, self.T, self.k)
+		self.Widmo1 = self.Pik * self.DOS * distribution_FD(self.E, self.Ef, self.T, self.k)
 	
 	def widmo2(self):
-		self.Widmo2 = self.Pik*self.DOS*self.__common.distribution_Boltzmann(0.0, self.E, self.T, self.k)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
+		self.Widmo2 = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.E, self.T, self.k)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
 
 	def widmo5(self):
-		self.Widmo5 = (1.0 / self.E) * self.DOS * self.__common.distribution_Planck(self.E, self.T, self.k) * self.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
+		self.Widmo5 = (1.0 / self.E) * self.DOS * distribution_Planck(self.E, self.T, self.k) * self.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
 		#print Widmo5
 
 	def prawdopodobienstwo(self):
 		for j in range(0, len(self.En)):
 			for i in range(0, len(self.E)):
 			 #*Ogon_gestosci_stanow(E[i], Eg, 0.001, 50.0))
-			 self.Prawd[i] = self.Prawd[i]+self.__common.Calka(self.E, self.__common.pik_Gaussowski(self.E, self.E[i], self.gamma)*self.DOS*self.__common.distribution_Boltzmann(0.0, self.E, self.T, self.k))
+			 self.Prawd[i] = self.Prawd[i]+Calka(self.E, pik_Gaussowski(self.E, self.E[i], self.gamma)*self.DOS*distribution_Boltzmann(0.0, self.E, self.T, self.k))
 			 
 			 #Prawd[i]=Prawd[i]+Calka(E, Pik_Lorentza(E, E[i], gamma)*DOS*Rozklad_Boltzmanna(0.0, E, T)*Ogon_gestosci_stanow(E[i], Eg-En[0], gamma2, gamma_schodek2))
 
@@ -267,8 +208,7 @@ class GUI:
     # This is a callback function. The data arguments are ignored
     # in this example. More on callbacks below.
     def generate_graph(self, widget, data=None):
-        c = Calculate()
-	co = Common()
+        c = Spectrum_generator()
 	c.all()
 
 	count=len(open('LAMBDA_Zmierzona.txt', 'rU').readlines())
@@ -318,7 +258,7 @@ class GUI:
         self.window.connect("destroy", self.destroy)
     
         # Sets the border width of the window.
-        self.window.set_border_width(10)
+        self.window.set_border_width(30)
     
         # Creates a new button with the label "Hello World".
         self.button = gtk.Button("Generate graph!")
