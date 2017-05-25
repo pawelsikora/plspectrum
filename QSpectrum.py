@@ -169,7 +169,7 @@ class Spectrum_generator:
 		plik2.close()
 		plik.close()
 
-	def all(self):
+	def calculate_all(self):
 		self.delta_cal()
 		self.energia_pocz()
 		self.widmo_fd()
@@ -179,12 +179,24 @@ class Spectrum_generator:
 		self.widmo()
 		self.save_to_files()
 
+	def plot_widmo_alfa(self):
+		plt.plot(self.params.E, self.DOS/max(self.DOS), 'r', self.params.E, self.DOS2/max(self.DOS2), 'b', self.params.E, self.Hevisajd/max(self.Hevisajd), 'g', lw=2)
+		plt.savefig("plot_alfa.png")
+		plt.show()
+	
+	def plot_widmo_beta(self):
+		self.count = len(open('LAMBDA_Zmierzona.txt', 'rU').readlines())
+		self.zmierzone_x = open('LAMBDA_Zmierzona.txt', 'rU').readlines()
+		self.zmierzone_y = open('Zmierzone1.txt', 'rU').readlines()
+
+		for i in range(0, self.count):
+		    self.zmierzone_x[i] = float(self.zmierzone_x[i].strip())
+		    self.zmierzone_y[i] = float(self.zmierzone_y[i].strip())
 		
-
-#print len(En), En
-#print len(E), En+Eg
-
-
+		plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), 'b', self.zmierzone_x, self.zmierzone_y, 'k.', lw=2)
+		plt.savefig("plot_beta.png")
+		plt.show()
+		
 #Pochodna=diff(E, DOS, 1)
 
 #for i in range(0, len(E)):
@@ -196,15 +208,7 @@ class GUI:
     # in this example. More on callbacks below.
     def generate_graph(self, widget, data=None):
         c = Spectrum_generator()
-	c.all()
-
-	count=len(open('LAMBDA_Zmierzona.txt', 'rU').readlines())
-	zmierzone_x = open('LAMBDA_Zmierzona.txt', 'rU').readlines()
-	zmierzone_y = open('Zmierzone1.txt', 'rU').readlines()
-
-	for i in range(0,count):
-	    zmierzone_x[i]=float(zmierzone_x[i].strip())
-	    zmierzone_y[i]=float(zmierzone_y[i].strip())
+	c.calculate_all()
 	
 	#print "Prawd"
 	#print c.params.Prawd
@@ -215,21 +219,10 @@ class GUI:
 	#print "Widmo5"
 	#print c.Widmo5
 
-	plt.plot(c.params.E, c.DOS/max(c.DOS), 'r', c.params.E, c.DOS2/max(c.DOS2), 'b', c.params.E, c.Hevisajd/max(c.Hevisajd), 'g', lw=2)
-	#plt.plot(c.params.LAMBDA, c.Widmo5/max(c.Widmo5), 'r', c.params.LAMBDA, c.params.Widmo/max(c.params.Widmo), 'b', zmierzone_x, zmierzone_y, 'k.', lw=2)
-	plt.savefig("pik1.png")
-	plt.show()
+	c.plot_widmo_beta()
 
     def delete_event(self, widget, event, data=None):
-        # If you return FALSE in the "delete_event" signal handler,
-        # GTK will emit the "destroy" signal. Returning TRUE means
-        # you don't want the window to be destroyed.
-        # This is useful for popping up 'are you sure you want to quit?'
-        # type dialogs.
         print "delete event occurred"
-
-        # Change FALSE to TRUE and the main window will not be destroyed
-        # with a "delete_event".
         return False
 
     def destroy(self, widget, data=None):
