@@ -1,35 +1,33 @@
 #!/usr/bin/env python
 
 import pygtk
-pygtk.require('2.0')
 import gtk
+pygtk.require('2.0')
 from common import *
+
+import linecache
 import numpy as np
+import scipy as sp
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import scipy as sp
-from scipy import signal
-import linecache
-#from sympy.mpmath import *
 
 __author__ = "Piotr Ruszala"
 __version__ = "0.1"
 
 class Parameters:	
 	def __init__(self):
-		self.A0=10.0
-		self.g0=1.0
-		self.k=8.617*10**(-5)
-		self.Eg=1.1828#1.45
-		self.T=300.0
-		self.gamma=0.001
-		self.gamma2=1.0
+		self.A0 = 10.0
+		self.g0 = 1.0
+		self.Eg = 1.1828
+		self.T = 300
+		self.gamma = 0.001
+		self.gamma2 = 1.0
 		self.gamma_schodek=35.0
 		self.gamma_schodek2=5.0
-		self.Ef=0.5 * self.Eg
-		self.E=np.arange(1.08,1.35,0.001)
-		self.En=np.array([0.49475 + 0.69223 - self.Eg, 0.54384+0.7062 - self.Eg, 0.60827 + 0.7275 - self.Eg])
-		self.CP=np.array([0.98453, 0.94166, 0.79406])
+		self.Ef = 0.5 * self.Eg
+		self.E = np.arange(1.08,1.35,0.001)
+		self.En = np.array([0.49475 + 0.69223 - self.Eg, 0.54384+0.7062 - self.Eg, 0.60827 + 0.7275 - self.Eg])
+		self.CP = np.array([0.98453, 0.94166, 0.79406])
 			
 		self.a=np.zeros(len(self.E))
 		self.g_bulk=np.zeros(len(self.E))
@@ -43,7 +41,6 @@ class Parameters:
 		self.Epocz=np.zeros(len(self.E))
 		self.Widmo=np.zeros(len(self.E))
 		self.Prawd=np.zeros(len(self.E))
-		self.Energia=0.0
 		self.LAMBDA = (1.24 / self.E)
 	
 	def get_A0(self):
@@ -103,13 +100,6 @@ class Parameters:
 		
 class Spectrum_generator(Parameters):
 
-	Widmo_fd = 0
-	Widmo_b = 0
-	Widmo_p = []
-	Widmo = []
-	widmo = 0
-	delta = 0
-	
 	def __init__(self):
 		Parameters.__init__(self)
 		Parameters.update(self)
@@ -132,19 +122,19 @@ class Spectrum_generator(Parameters):
 			else:
 				self.Epocz[i]=1.0
 	def widmo_fd(self):
-		self.Widmo_fd = self.Pik * self.DOS * distribution_FD(self.E, self.Ef, self.T, self.k)
+		self.Widmo_fd = self.Pik * self.DOS * distribution_FD(self.E, self.Ef, self.T)
 	
 	def widmo_boltzmann(self):
-		self.Widmo_b = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.E, self.T, self.k)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
+		self.Widmo_b = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.E, self.T)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
 
 	def widmo_planck(self):
-		self.Widmo5 = (1.0 / self.E) * self.DOS * distribution_Planck(self.E, self.T, self.k) * self.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
+		self.Widmo5 = (1.0 / self.E) * self.DOS * distribution_Planck(self.E, self.T) * self.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
 
 	def prawdopodobienstwo(self):
 		for j in range(0, len(self.En)):
 			for i in range(0, len(self.E)):
 			 #*Ogon_gestosci_stanow(E[i], Eg, 0.001, 50.0))
-			 self.Prawd[i] = self.Prawd[i]+Calka(self.E, pik_Gaussowski(self.E, self.E[i], self.gamma)*self.DOS*distribution_Boltzmann(0.0, self.E, self.T, self.k))
+			 self.Prawd[i] = self.Prawd[i]+Calka(self.E, pik_Gaussowski(self.E, self.E[i], self.gamma)*self.DOS*distribution_Boltzmann(0.0, self.E, self.T))
 			 
 			 #Prawd[i]=Prawd[i]+Calka(E, Pik_Lorentza(E, E[i], gamma)*DOS*Rozklad_Boltzmanna(0.0, E, T)*Ogon_gestosci_stanow(E[i], Eg-En[0], gamma2, gamma_schodek2))
 
@@ -282,13 +272,6 @@ if __name__ == "__main__":
 	gui = GUI()
 	gui.main()
         
-	#c = Calculate()
-	#co = Common()
-	#c.all()
-	#print c.LAMBDA
-
-
-
 	#count=len(open('LAMBDA_Zmierzona.txt', 'rU').readlines())
 	#zmierzone_x = open('LAMBDA_Zmierzona.txt', 'rU').readlines()
 	#zmierzone_y = open('Zmierzone1.txt', 'rU').readlines()
