@@ -98,43 +98,50 @@ class Parameters:
 	def update(self):
 		return 0
 		
-class Spectrum_generator(Parameters):
+class Spectrum_generator:
 
 	def __init__(self):
-		Parameters.__init__(self)
-		Parameters.update(self)
+		self.DOS = 0 
+		self.DOS2 = 0
+		self.Hevisajd = 0 
+		self.Pik = 0
+		self.Normal = 0
+		self.Pik_mieszany = 0
+		self.Delty= 0
+		self.params = Parameters()
+		self.params.update()
 		
 	def delta_cal(self):	
-		for i in range(0, len(self.En)):
-			self.DOS = self.DOS + self.g0 * self.CP[i] * (DOS_rozmyty_erf(self.E, self.Eg + self.En[i], self.gamma_schodek))
-			self.DOS2 = self.DOS2 + self.g0 * self.CP[i] * (DOS_rozmyty_cauchy(self.E, self.Eg + self.En[i], self.gamma_schodek))
-			self.Hevisajd = self.Hevisajd + self.g0 * self.CP[i] * Schodek(self.E-self.Eg-self.En[i])
-			self.Pik = self.Pik + self.A0 * (pik_Lorentza(self.E, self.Eg + self.En[i], self.gamma))
-			self.Normal = self.Normal + self.A0 * pik_Gaussowski(self.E, self.Eg + self.En[i], self.gamma)
-			self.Pik_mieszany = self.Pik_mieszany + self.A0 * (pik_Lorentza(self.E, self.Eg + self.En[i], self.gamma) + pik_Gaussowski(self.E, self.Eg+self.En[i], self.gamma))
-			self.Delty=self.Delty+self.A0*Delta(self.E-self.Eg-self.En[i])
+		for i in range(0, len(self.params.En)):
+			self.DOS = self.DOS + self.params.g0 * self.params.CP[i] * (DOS_rozmyty_erf(self.params.E, self.params.Eg + self.params.En[i], self.params.gamma_schodek))
+			self.DOS2 = self.DOS2 + self.params.g0 * self.params.CP[i] * (DOS_rozmyty_cauchy(self.params.E, self.params.Eg + self.params.En[i], self.params.gamma_schodek))
+			self.Hevisajd = self.Hevisajd + self.params.g0 * self.params.CP[i] * Schodek(self.params.E-self.params.Eg-self.params.En[i])
+			self.Pik = self.Pik + self.params.A0 * (pik_Lorentza(self.params.E, self.params.Eg + self.params.En[i], self.params.gamma))
+			self.Normal = self.Normal + self.params.A0 * pik_Gaussowski(self.params.E, self.params.Eg + self.params.En[i], self.params.gamma)
+			self.Pik_mieszany = self.Pik_mieszany + self.params.A0 * (pik_Lorentza(self.params.E, self.params.Eg + self.params.En[i], self.params.gamma) + pik_Gaussowski(self.params.E, self.params.Eg+self.params.En[i], self.params.gamma))
+			self.Delty=self.Delty+self.params.A0*Delta(self.params.E-self.params.Eg-self.params.En[i])
 
 
 	def energia_pocz(self):
-		for i in range(0,len(self.E)):
-			if self.E[i]<=(self.Eg+self.En[0]):
-				self.Epocz[i]=0.0
+		for i in range(0,len(self.params.E)):
+			if self.params.E[i]<=(self.params.Eg+self.params.En[0]):
+				self.params.Epocz[i]=0.0
 			else:
-				self.Epocz[i]=1.0
+				self.params.Epocz[i]=1.0
 	def widmo_fd(self):
-		self.Widmo_fd = self.Pik * self.DOS * distribution_FD(self.E, self.Ef, self.T)
+		self.Widmo_fd = self.Pik * self.DOS * distribution_FD(self.params.E, self.params.Ef, self.params.T)
 	
 	def widmo_boltzmann(self):
-		self.Widmo_b = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.E, self.T)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
+		self.Widmo_b = self.Pik*self.DOS*distribution_Boltzmann(0.0, self.params.E, self.params.T)#*Epocz #Epocz to tak naprawde schodek, ucina energie!
 
 	def widmo_planck(self):
-		self.Widmo5 = (1.0 / self.E) * self.DOS * distribution_Planck(self.E, self.T) * self.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
+		self.Widmo5 = (1.0 / self.params.E) * self.DOS * distribution_Planck(self.params.E, self.params.T) * self.params.E #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) - absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
 
 	def prawdopodobienstwo(self):
-		for j in range(0, len(self.En)):
-			for i in range(0, len(self.E)):
+		for j in range(0, len(self.params.En)):
+			for i in range(0, len(self.params.E)):
 			 #*Ogon_gestosci_stanow(E[i], Eg, 0.001, 50.0))
-			 self.Prawd[i] = self.Prawd[i]+Calka(self.E, pik_Gaussowski(self.E, self.E[i], self.gamma)*self.DOS*distribution_Boltzmann(0.0, self.E, self.T))
+			 self.params.Prawd[i] = self.params.Prawd[i] + Calka(self.params.E, pik_Gaussowski(self.params.E, self.params.E[i], self.params.gamma)*self.DOS*distribution_Boltzmann(0.0, self.params.E, self.params.T))
 			 
 			 #Prawd[i]=Prawd[i]+Calka(E, Pik_Lorentza(E, E[i], gamma)*DOS*Rozklad_Boltzmanna(0.0, E, T)*Ogon_gestosci_stanow(E[i], Eg-En[0], gamma2, gamma_schodek2))
 
@@ -145,19 +152,19 @@ class Spectrum_generator(Parameters):
 			yield i
 	
 	def widmo(self):
-		self.Widmo = self.Prawd * self.E
+		self.params.Widmo = self.params.Prawd * self.params.E
 	
 	def save_to_files(self):
 		plik = open('widmo1', 'w')
 		plik2 = open('lambda', 'w')
 		
-		for i in self.generate(len(self.Widmo)):
-		    plik.write(str(self.LAMBDA[i]) + ' '
-		               + str(self.Widmo[i]/max(self.Widmo))
+		for i in self.generate(len(self.params.Widmo)):
+		    plik.write(str(self.params.LAMBDA[i]) + ' '
+		               + str(self.params.Widmo[i]/max(self.params.Widmo))
 		               + '\n')
 		
-		for i in self.generate(len(self.LAMBDA)):
-		    plik2.write(str(self.LAMBDA[i]) + '\n')
+		for i in self.generate(len(self.params.LAMBDA)):
+		    plik2.write(str(self.params.LAMBDA[i]) + '\n')
 		
 		plik2.close()
 		plik.close()
@@ -199,9 +206,17 @@ class GUI:
 	    zmierzone_x[i]=float(zmierzone_x[i].strip())
 	    zmierzone_y[i]=float(zmierzone_y[i].strip())
 	
-	print c.E
+	#print "Prawd"
+	#print c.params.Prawd
+	#print "LAMBDA"
+	#print c.params.LAMBDA
+	#print "Widmo"
+	#print c.params.Widmo
+	#print "Widmo5"
+	#print c.Widmo5
 
-	plt.plot(c.E, c.DOS/max(c.DOS), 'r', c.E, c.DOS2/max(c.DOS2), 'b', c.E, c.Hevisajd/max(c.Hevisajd), 'g', lw=2)
+	plt.plot(c.params.E, c.DOS/max(c.DOS), 'r', c.params.E, c.DOS2/max(c.DOS2), 'b', c.params.E, c.Hevisajd/max(c.Hevisajd), 'g', lw=2)
+	#plt.plot(c.params.LAMBDA, c.Widmo5/max(c.Widmo5), 'r', c.params.LAMBDA, c.params.Widmo/max(c.params.Widmo), 'b', zmierzone_x, zmierzone_y, 'k.', lw=2)
 	plt.savefig("pik1.png")
 	plt.show()
 
