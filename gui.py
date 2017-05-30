@@ -1,5 +1,8 @@
-import pygtk
-pygtk.require('2.0')
+from gi import pygtkcompat
+
+pygtkcompat.enable() 
+pygtkcompat.enable_gtk(version='3.0')
+
 import gtk
 
 from QSpectrum import Spectrum_generator
@@ -39,13 +42,13 @@ class GUI:
         #self.bbox.pack_start(self.entry, True, True, 0)    
     
         self.button1 = gtk.Button('Generate graph!')
-        self.bbox.add(self.button1)
+        #self.bbox.add(self.button1)
 
         self.button2 = gtk.Button('Save graph')
-        self.bbox.add(self.button2)
+        #self.bbox.add(self.button2)
 
         self.button3 = gtk.Button('Compare two graphs')
-        self.bbox.add(self.button3)
+        #self.bbox.add(self.button3)
 
         self.window.connect("delete_event", self.delete_event)
     
@@ -58,8 +61,8 @@ class GUI:
         #self.window.add(self.bbox)
     
         grid.add(self.entry)
-        grid.attach_next_to(self.button1, self.entry, Gtk.PositionType.RIGHT, 2, 1)
-
+        grid.attach_next_to(self.button1, self.entry, gtk.PositionType.RIGHT, 2, 1)
+	
         self.window.show_all()
 
     def main(self):
