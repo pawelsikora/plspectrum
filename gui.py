@@ -32,23 +32,11 @@ class GUI:
         self.entry = gtk.Entry()
         self.entry.set_text("Hello World")
     
-        #self.hbox = gtk.HButtonBox()
-        #self.hbox.set_layout(gtk.BUTTONBOX_SPREAD)
-        #self.hbox.set_border_width(5)
-        
-        #self.bbox = gtk.VButtonBox()
-        #self.bbox.set_layout(gtk.BUTTONBOX_EDGE)
-        #self.bbox.set_border_width(5)
-        #self.bbox.pack_start(self.entry, True, True, 0)    
-    
         self.button1 = gtk.Button('Generate graph!')
-        #self.bbox.add(self.button1)
 
         self.button2 = gtk.Button('Save graph')
-        #self.bbox.add(self.button2)
 
         self.button3 = gtk.Button('Compare two graphs')
-        #self.bbox.add(self.button3)
 
         self.window.connect("delete_event", self.delete_event)
     
@@ -57,8 +45,6 @@ class GUI:
         self.window.set_border_width(30)
     
         self.button1.connect("clicked", self.generate_graph, None)
-    
-        #self.window.add(self.bbox)
     
         grid.add(self.entry)
         grid.attach_next_to(self.button1, self.entry, gtk.PositionType.RIGHT, 2, 1)
