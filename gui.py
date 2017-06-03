@@ -28,10 +28,28 @@ class GUI:
     
         grid = gtk.Grid()
         self.window.add(grid)    
-    
-        self.entry = gtk.Entry()
-        self.entry.set_text("Hello World")
-    
+
+        self.label_param_a0 = gtk.Label("A0")
+        self.label_param_g0 = gtk.Label("g0")
+        self.label_param_eg = gtk.Label("Eg")
+        self.label_param_T = gtk.Label("T")
+        self.label_param_gamma = gtk.Label("Gamma")
+        self.label_param_gamma_schodek = gtk.Label("Gamma schodek")
+
+        self.label_param_a0.set_xalign(1)
+        self.label_param_g0.set_xalign(1)
+        self.label_param_eg.set_xalign(1)
+        self.label_param_T.set_xalign(1)
+        self.label_param_gamma.set_xalign(1)
+        self.label_param_gamma_schodek.set_xalign(1)
+
+        self.entry_param_a0 = gtk.Entry()
+        self.entry_param_g0 = gtk.Entry()
+        self.entry_param_eg = gtk.Entry()
+        self.entry_param_T = gtk.Entry()
+        self.entry_param_gamma = gtk.Entry()
+        self.entry_param_gamma_schodek = gtk.Entry()
+
         self.button1 = gtk.Button('Generate graph!')
 
         self.button2 = gtk.Button('Save graph')
@@ -45,10 +63,22 @@ class GUI:
         self.window.set_border_width(30)
     
         self.button1.connect("clicked", self.generate_graph, None)
-    
-        grid.add(self.entry)
-        grid.attach_next_to(self.button1, self.entry, gtk.PositionType.RIGHT, 2, 1)
-	
+
+        grid.add(self.label_param_a0)
+        grid.attach_next_to(self.label_param_g0, self.label_param_a0, gtk.PositionType.BOTTOM, 1, 2)
+        grid.attach_next_to(self.label_param_eg, self.label_param_g0, gtk.PositionType.BOTTOM, 1, 3)
+        grid.attach_next_to(self.label_param_T, self.label_param_eg, gtk.PositionType.BOTTOM, 1, 4)
+        grid.attach_next_to(self.label_param_gamma, self.label_param_T, gtk.PositionType.BOTTOM, 1, 5)
+        grid.attach_next_to(self.label_param_gamma_schodek, self.label_param_gamma, gtk.PositionType.BOTTOM, 1, 6)
+
+        grid.add(self.entry_param_a0)
+        grid.attach_next_to(self.entry_param_g0, self.entry_param_a0, gtk.PositionType.BOTTOM, 2, 2)
+        grid.attach_next_to(self.entry_param_eg, self.entry_param_g0, gtk.PositionType.BOTTOM, 2, 3)
+        grid.attach_next_to(self.entry_param_T, self.entry_param_eg, gtk.PositionType.BOTTOM, 2, 4)
+        grid.attach_next_to(self.entry_param_gamma, self.entry_param_T, gtk.PositionType.BOTTOM, 2, 5)
+        grid.attach_next_to(self.entry_param_gamma_schodek, self.entry_param_gamma, gtk.PositionType.BOTTOM, 2, 6)
+        grid.attach_next_to(self.button1, self.entry_param_gamma_schodek, gtk.PositionType.RIGHT, 3, 6)
+
         self.window.show_all()
 
     def main(self):
