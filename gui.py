@@ -11,6 +11,14 @@ class GUI:
 
     def generate_graph(self, widget, data=None):
         c = Spectrum_generator()
+
+        c.arams.A0 = float(self.entry_param_a0.get_text())
+        c.params.g0 = float(self.entry_param_g0.get_text())
+        c.params.Eg = float(self.entry_param_eg.get_text())
+        c.params.T = float(self.entry_param_T.get_text())
+        c.params.gamma = float(self.entry_param_gamma.get_text())
+        c.params.gamma_schodek = float(self.entry_param_gamma_schodek.get_text())
+
         c.calculate_all()
         c.plot_widmo_beta()
 
