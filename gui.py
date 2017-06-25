@@ -1,6 +1,9 @@
 from gi import pygtkcompat
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
+import numpy as np
+import itertools as it
+import csv
 
 pygtkcompat.enable()
 pygtkcompat.enable_gtk(version='3.0')
@@ -72,21 +75,78 @@ class GUI:
     def save_to_origin(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
         if self.spectrum_choice == 1:
-           self.c.save_to_files("widmo_alfa", "lambda_alfa")
+           dialog_alfa = gtk.FileChooserDialog("Please choose a file", None,
+               gtk.FileChooserAction.SAVE,
+               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                gtk.STOCK_SAVE, gtk.ResponseType.OK))
+
+           dialog_alfa.set_current_name('alfa_spectrum_origin_Untitled.txt')
+           response = dialog_alfa.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_alfa.get_filename())
+
+               f = open(dialog_alfa.get_filename(), 'wb')
+               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1], self.c.linez[1]])
+               data = data.T
+               somestr = "X Y1 Y2 Y3\n"
+               f.write(somestr.encode('ascii'))
+               np.savetxt(f, data, fmt='%.7f %.7f %.7f %.7f')
+               f.close()
+
+           dialog_alfa.destroy()
         elif self.spectrum_choice == 2:
-           self.c.save_to_files("widmo_beta", "lambda_beta")
-        dialog3 = gtk.FileChooserDialog("Please choose a file", None,
-            gtk.FileChooserAction.SAVE,
-            (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-             gtk.STOCK_OPEN, gtk.ResponseType.OK))
+           dialog_beta = gtk.FileChooserDialog("Please choose a file", None,
+               gtk.FileChooserAction.SAVE,
+               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                gtk.STOCK_SAVE, gtk.ResponseType.OK))
 
-        response = dialog3.run()
-        if response == gtk.ResponseType.OK:
-            print("Open clicked")
-            print("File selected: " + dialog3.get_filename())
+           dialog_beta.set_current_name('beta_spectrum_origin_Untitled.txt')
+           response = dialog_beta.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_beta.get_filename())
 
-        dialog3.destroy()
+               f = open(dialog_beta.get_filename(), 'wb')
+               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1]])
+               data = data.T
+               somestr = "X Y1 Y2\n"
+               f.write(somestr.encode('ascii'))
+               np.savetxt(f, data, fmt='%.7f %.7f %.7f')
+               f.close()
 
+           dialog_beta.destroy()
+
+    def save_graph(self, widget, data=None):
+        self.spectrum_choice = self.spectrum_combobox.get_active()
+        if self.spectrum_choice == 1:
+           dialog_alfa = gtk.FileChooserDialog("Please choose the name of a file to save", None,
+               gtk.FileChooserAction.SAVE,
+               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                gtk.STOCK_SAVE, gtk.ResponseType.OK))
+
+           dialog_alfa.set_current_name('alfa_spectrum_graph_Untitled.png')
+           response = dialog_alfa.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_alfa.get_filename())
+
+
+           dialog_alfa.destroy()
+        elif self.spectrum_choice == 2:
+           dialog_beta = gtk.FileChooserDialog("Please choose the name of a file to save", None,
+               gtk.FileChooserAction.SAVE,
+               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                gtk.STOCK_SAVE, gtk.ResponseType.OK))
+
+           dialog_beta.set_current_name('beta_spectrum_graph_Untitled.png')
+           response = dialog_beta.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_beta.get_filename())
+
+
+           dialog_beta.destroy()
 
     def delete_event(self, widget, event, data=None):
         print("delete event occurred")

@@ -6,6 +6,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import pickle
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.font_manager import FontProperties
 
@@ -118,12 +119,15 @@ class Spectrum_generator:
         self.widmo_planck()
         self.prawdopodobienstwo()
         self.widmo()
-#self.save_to_files()
 
     def plot_widmo_alfa(self):
         one = plt.plot(self.params.E, self.DOS/max(self.DOS), 'r', label="one")
         two = plt.plot(self.params.E, self.DOS2/max(self.DOS2), 'b', label="two")
         three = plt.plot(self.params.E, self.Hevisajd/max(self.Hevisajd), 'g', lw=2, label="three")
+
+        self.linex = one[0].get_data()
+        self.liney = two[0].get_data()
+        self.linez = three[0].get_data()
 
         plt.savefig("plot_alfa.png")
         self.generated_alfa = gtk.Image.new_from_file("plot_alfa.png")
@@ -139,12 +143,15 @@ class Spectrum_generator:
             self.zmierzone_x[i] = float(self.zmierzone_x[i].strip())
             self.zmierzone_y[i] = float(self.zmierzone_y[i].strip())
 
-        plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
+        data_plt = plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
              self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), \
              'b', self.zmierzone_x, self.zmierzone_y, 'k.', lw=2)
 
-        plt.savefig("plot_beta.png")
-        self.generated_beta = gtk.Image.new_from_file("plot_beta.png")
+        self.linex = data_plt[0].get_data()
+        self.liney = data_plt[1].get_data()
+        self.linez = data_plt[2].get_data()
+        plt.savefig("plot_beta_tmp.png")
+        self.generated_beta = gtk.Image.new_from_file("plot_beta_tmp.png")
         plt.show()
 
 
