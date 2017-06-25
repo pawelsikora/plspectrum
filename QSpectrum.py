@@ -9,6 +9,7 @@ import matplotlib.patches as mpatches
 import pickle
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.font_manager import FontProperties
+from gi.repository.GdkPixbuf import Pixbuf
 
 __author__ = "Piotr Ruszala"
 __version__ = "0.1"
@@ -129,10 +130,10 @@ class Spectrum_generator:
         self.liney = two[0].get_data()
         self.linez = three[0].get_data()
 
-        plt.savefig("plot_alfa.png")
-        self.generated_alfa = gtk.Image.new_from_file("plot_alfa.png")
-
-        plt.show()
+        plt.savefig("plot_alfa_tmp.png")
+        self.pb = Pixbuf.new_from_file("plot_alfa_tmp.png")
+        self.generated_alfa = gtk.Image.new_from_file("plot_alfa_tmp.png")
+        plt.close()
 
     def plot_widmo_beta(self):
         self.count = len(open('LAMBDA_Zmierzona.txt', 'rU').readlines())
@@ -151,9 +152,9 @@ class Spectrum_generator:
         self.liney = data_plt[1].get_data()
         self.linez = data_plt[2].get_data()
         plt.savefig("plot_beta_tmp.png")
+        self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
         self.generated_beta = gtk.Image.new_from_file("plot_beta_tmp.png")
-        plt.show()
-
+        plt.close()
 
 if __name__ == "__main__":
 

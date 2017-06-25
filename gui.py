@@ -119,34 +119,24 @@ class GUI:
 
     def save_graph(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
+
+        dialog_graph = gtk.FileChooserDialog("Please choose the name of a file to save", None,
+            gtk.FileChooserAction.SAVE,
+            (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+             gtk.STOCK_SAVE, gtk.ResponseType.OK))
+
         if self.spectrum_choice == 1:
-           dialog_alfa = gtk.FileChooserDialog("Please choose the name of a file to save", None,
-               gtk.FileChooserAction.SAVE,
-               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-                gtk.STOCK_SAVE, gtk.ResponseType.OK))
-
-           dialog_alfa.set_current_name('alfa_spectrum_graph_Untitled.png')
-           response = dialog_alfa.run()
-           if response == gtk.ResponseType.OK:
-               print("Save clicked")
-               print("File selected: " + dialog_alfa.get_filename())
-
-
-           dialog_alfa.destroy()
+            dialog_graph.set_current_name('alfa_spectrum_graph_Untitled.png')
         elif self.spectrum_choice == 2:
-           dialog_beta = gtk.FileChooserDialog("Please choose the name of a file to save", None,
-               gtk.FileChooserAction.SAVE,
-               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-                gtk.STOCK_SAVE, gtk.ResponseType.OK))
+            dialog_graph.set_current_name('beta_spectrum_graph_Untitled.png')
 
-           dialog_beta.set_current_name('beta_spectrum_graph_Untitled.png')
-           response = dialog_beta.run()
-           if response == gtk.ResponseType.OK:
-               print("Save clicked")
-               print("File selected: " + dialog_beta.get_filename())
+        response = dialog_graph.run()
+        if response == gtk.ResponseType.OK:
+            print("Save clicked")
+            print("File selected: " + dialog_graph.get_filename())
+            self.c.pb.savev(dialog_graph.get_filename(), "png", [], [])
 
-
-           dialog_beta.destroy()
+        dialog_graph.destroy()
 
     def delete_event(self, widget, event, data=None):
         print("delete event occurred")
@@ -176,7 +166,7 @@ class GUI:
         self.grid.set_row_spacing(10)
         self.window.add(self.grid)
 
-        self.initGraph = gtk.Image.new_from_file('plot_alfa.png')
+        self.initGraph = gtk.Image.new_from_file('init_frame_image.png')
         self.currentGraph = self.initGraph
 
         spectrum_store = gtk.ListStore(int, str)
@@ -223,8 +213,6 @@ class GUI:
 
         self.button5 = gtk.Button()
 
-        self.button2 = gtk.Button('Save graph')
-
         self.button3 = gtk.Button('Compare two graphs')
 
         self.window.connect("delete_event", self.delete_event)
@@ -234,6 +222,7 @@ class GUI:
         self.window.set_border_width(30)
 
         self.button1.connect("clicked", self.generate_graph, None)
+        self.buttonSaveImage.connect("clicked", self.save_graph, None)
 
         self.grid.attach(self.label_param_a0, 0, 2, 1, 1)
         self.grid.attach_next_to(self.label_param_g0, self.label_param_a0, gtk.PositionType.BOTTOM, 1, 1)
