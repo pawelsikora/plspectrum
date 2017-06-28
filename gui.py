@@ -37,6 +37,7 @@ class GUI:
         self.c.params.T = float(self.entry_param_T.get_text())
         self.c.params.gamma = float(self.entry_param_gamma.get_text())
         self.c.params.gamma_schodek = float(self.entry_param_gamma_schodek.get_text())
+
         if (self.c.params.A0) == 0 or self.c.params.g0  == 0 or \
            self.c.params.Eg == 0 or self.c.params.T == 0 or \
            self.c.params.gamma == 0 or self.c.params.gamma_schodek == 0:
@@ -48,6 +49,7 @@ class GUI:
               dialog1.run()
               dialog1.destroy()
 
+        self.c.params.LAMBDA = (1.24 / self.c.params.Eg)
         self.spectrum_choice = self.spectrum_combobox.get_active()
 
         if self.spectrum_choice == 1:
