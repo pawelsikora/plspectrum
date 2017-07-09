@@ -11,26 +11,17 @@ pygtkcompat.enable_gtk(version='3.0')
 import gtk
 
 from QSpectrum import Spectrum_generator
-class DialogExample(gtk.Dialog):
-
-    def __init__(self, parent):
-        gtk.Dialog.__init__(self, "My Dialog", parent, 0,
-            (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-             gtk.STOCK_OK, gtk.ResponseType.OK))
-
-        self.set_default_size(150, 100)
-
-        label = gtk.Label("This is a dialog to display additional information")
-
-        box = self.get_content_area()
-        box.add(label)
-        self.show_all()
 
 class GUI:
 
     def generate_graph(self, widget, data=None):
-
         self.c = Spectrum_generator()
+        print(self.c.params.En)
+
+        if(self.entry_param_en.get_text() != ""):
+            self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
+        print(self.c.params.En)
+
         self.c.params.A0 = float(self.entry_param_a0.get_text())
         self.c.params.g0 = float(self.entry_param_g0.get_text())
         self.c.params.Eg = float(self.entry_param_eg.get_text())
@@ -148,6 +139,15 @@ class GUI:
         print("destroy signal occurred")
         gtk.main_quit()
 
+    def changed_energy_levels(self, widget, data=None):
+        print("text in energy levels changed!")
+
+        txt_in_entry = self.entry_param_en.get_text()
+#        print("Number of ',': " + str(txt_in_entry.count(',')))
+        if txt_in_entry == "":
+            self.label_number_of_energy_levels.set_markup("<b>0</b>")
+        else:
+            self.label_number_of_energy_levels.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
     def on_spectrum_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
@@ -158,19 +158,63 @@ class GUI:
             entry = combo.get_child()
             print("Entered: %s" % entry.get_text())
 
+
+    def on_compound_combo_changed(self, combo):
+        tree_iter = combo.get_active_iter()
+        if tree_iter != None:
+            model = combo.get_model()
+            row_id, name = model[tree_iter][:2]
+            print("Selected: ID=%d, name=%s" % (row_id, name))
+        else:
+            entry = combo.get_child()
+            print("Entered: %s" % entry.get_text())
+
+        compound = combo.get_active()
+
+        if compound == 1:
+            self.entry_param_mee.set_text("0")
+            self.entry_param_mee.set_sensitive(False)
+            self.entry_param_mehh.set_text("0")
+            self.entry_param_mehh.set_sensitive(False)
+            self.entry_param_melh.set_text("0")
+            self.entry_param_melh.set_sensitive(False)
+        elif compound == 2:
+            self.entry_param_mee.set_text("1")
+            self.entry_param_mee.set_sensitive(False)
+            self.entry_param_mehh.set_text("1")
+            self.entry_param_mehh.set_sensitive(False)
+            self.entry_param_melh.set_text("1")
+            self.entry_param_melh.set_sensitive(False)
+        elif compound == 3:
+            self.entry_param_mee.set_text("2")
+            self.entry_param_mee.set_sensitive(False)
+            self.entry_param_mehh.set_text("2")
+            self.entry_param_mehh.set_sensitive(False)
+            self.entry_param_melh.set_text("2")
+            self.entry_param_melh.set_sensitive(False)
+        elif compound == 0:
+            self.entry_param_mee.set_text("")
+            self.entry_param_mee.set_sensitive(True)
+            self.entry_param_mehh.set_text("")
+            self.entry_param_mehh.set_sensitive(True)
+            self.entry_param_melh.set_text("")
+            self.entry_param_melh.set_sensitive(True)
+
     def __init__(self):
+        self.i = 0
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        self.window.set_size_request(1024, 450)
+        self.window.set_size_request(1400, 450)
         self.window.set_icon_from_file('icon.png')
         self.grid = gtk.Grid()
 
-        self.grid.set_column_spacing(10)
-        self.grid.set_row_spacing(10)
+        self.grid.set_column_spacing(20)
+        self.grid.set_row_spacing(20)
         self.window.add(self.grid)
 
         self.initGraph = gtk.Image.new_from_file('init_frame_image.png')
         self.currentGraph = self.initGraph
 
+        # combobox for choosing spectrum
         spectrum_store = gtk.ListStore(int, str)
         spectrum_store.append([1, "--- Choose spectrum ---"])
         spectrum_store.append([11, "Widmo alfa"])
@@ -181,15 +225,29 @@ class GUI:
         self.spectrum_combobox.set_entry_text_column(1)
         self.spectrum_combobox.set_active(0)
 
+        # combobox for choosing compound
+        compound_store = gtk.ListStore(int, str)
+        compound_store.append([1, "--- Custom ---"])
+        compound_store.append([11, "GaAs"])
+        compound_store.append([12, "InAs"])
+        compound_store.append([2, "GaInAs"])
+        self.compound_combobox = gtk.ComboBox.new_with_model_and_entry(compound_store)
+        self.compound_combobox.connect("changed", self.on_compound_combo_changed)
+        self.compound_combobox.set_entry_text_column(1)
+        self.compound_combobox.set_active(0)
+
         self.frame1 = gtk.Frame(label="Graph")
         self.frame1.set_label_align(0.5, 0.5)
         self.frame1.add(self.currentGraph)
+
         self.label_param_a0 = gtk.Label("A0")
         self.label_param_g0 = gtk.Label("g0")
         self.label_param_eg = gtk.Label("Eg")
         self.label_param_ef = gtk.Label("Ef")
         self.label_param_en = gtk.Label("En")
-        self.label_param_e = gtk.Label("E")
+        self.label_param_emin = gtk.Label("Emin")
+        self.label_param_emax = gtk.Label("Emax")
+        self.label_param_edn = gtk.Label("Edn")
         self.label_param_cp = gtk.Label("CP")
         self.label_param_T = gtk.Label("T")
         self.label_param_gamma = gtk.Label("Gamma")
@@ -197,27 +255,38 @@ class GUI:
         self.label_param_mee = gtk.Label("mee")
         self.label_param_mehh = gtk.Label("mehh")
         self.label_param_melh = gtk.Label("melh")
+        self.label_emass_pick = gtk.Label("Pick values for specific sc compound")
+        self.label_energy_levels = gtk.Label("Number of energy levels: ")
+        self.label_number_of_energy_levels = gtk.Label("0")
 
         self.label_param_a0.set_xalign(1)
         self.label_param_g0.set_xalign(1)
-        self.label_param_eg.set_xalign(1)
-        self.label_param_ef.set_xalign(1)
-        self.label_param_en.set_xalign(1)
-        self.label_param_e.set_xalign(1)
-        self.label_param_cp.set_xalign(1)
+        self.label_param_eg.set_xalign(0.5)
+        self.label_param_ef.set_xalign(0.5)
+        self.label_param_en.set_xalign(0.5)
+        self.label_param_emin.set_xalign(0.5)
+        self.label_param_emax.set_xalign(0.5)
+        self.label_param_edn.set_xalign(0.5)
+        self.label_param_cp.set_xalign(0.5)
         self.label_param_T.set_xalign(1)
         self.label_param_gamma.set_xalign(1)
         self.label_param_gamma_schodek.set_xalign(1)
-        self.label_param_mee.set_xalign(1)
-        self.label_param_mehh.set_xalign(1)
-        self.label_param_melh.set_xalign(1)
+        self.label_energy_levels.set_xalign(1)
+        self.label_number_of_energy_levels.set_xalign(1)
+
+        self.label_param_mee.set_xalign(0.5)
+        self.label_param_mehh.set_xalign(0.5)
+        self.label_param_melh.set_xalign(0.5)
+        self.label_emass_pick.set_xalign(0)
 
         self.entry_param_a0 = gtk.Entry()
         self.entry_param_g0 = gtk.Entry()
         self.entry_param_eg = gtk.Entry()
         self.entry_param_ef = gtk.Entry()
         self.entry_param_en = gtk.Entry()
-        self.entry_param_e = gtk.Entry()
+        self.entry_param_emin = gtk.Entry()
+        self.entry_param_emax = gtk.Entry()
+        self.entry_param_edn = gtk.Entry()
         self.entry_param_cp = gtk.Entry()
         self.entry_param_T = gtk.Entry()
         self.entry_param_gamma = gtk.Entry()
@@ -225,59 +294,91 @@ class GUI:
         self.entry_param_mee = gtk.Entry()
         self.entry_param_mehh = gtk.Entry()
         self.entry_param_melh = gtk.Entry()
+        self.entry_param_test = gtk.Entry()
+        self.entry_param_test2 = gtk.Entry()
 
+        # frame energy
+        self.frame_energy = gtk.Frame(label="Energies")
+        self.frame_energy.set_label_align(0.5, 0.5)
+        self.grid_energy = gtk.Grid()
+        self.grid_energy.set_row_spacing(10)
+        self.grid_energy.set_column_spacing(50)
+        self.frame_energy.add(self.grid_energy)
+
+        # entries for energy frame
+        self.entry_param_eg.set_width_chars(5)
+        self.entry_param_en.connect("changed", self.changed_energy_levels, None)
+        self.label_number_of_energy_levels.set_markup("<b>0</b>")
+        self.grid_energy.attach(self.label_energy_levels, 0, 0, 1, 1)
+        self.grid_energy.attach(self.label_number_of_energy_levels, 1, 0, 1, 1)
+        self.grid_energy.attach(self.label_param_en, 0, 1, 1, 1)
+        self.grid_energy.attach(self.label_param_emin, 0, 3, 1, 1)
+        self.grid_energy.attach(self.label_param_emax, 0, 4, 1, 1)
+        self.grid_energy.attach(self.label_param_edn, 0, 5, 1, 1)
+        self.grid_energy.attach(self.label_param_eg, 0, 6, 1, 1)
+        self.grid_energy.attach(self.label_param_ef, 0, 7, 1, 1)
+        self.grid_energy.attach(self.label_param_cp, 0, 8, 1, 1)
+        self.grid_energy.attach(self.entry_param_en, 1, 1, 2, 1)
+        self.grid_energy.attach(self.entry_param_emin, 1, 3, 1, 1)
+        self.grid_energy.attach(self.entry_param_emax, 1, 4, 1, 1)
+        self.grid_energy.attach(self.entry_param_edn, 1, 5, 1, 1)
+        self.grid_energy.attach(self.entry_param_eg, 1, 6, 1, 1)
+        self.grid_energy.attach(self.entry_param_ef, 1, 7, 1, 1)
+        self.grid_energy.attach(self.entry_param_cp, 1, 8, 2, 1)
+
+        # frame electron mass
+        self.frame_emass = gtk.Frame(label="Mass of electrons")
+        self.frame_emass.set_label_align(0.5, 0.5)
+        self.grid_emass = gtk.Grid()
+        self.grid_emass.set_row_spacing(20)
+        self.grid_emass.set_column_spacing(50)
+        self.frame_emass.add(self.grid_emass)
+
+        self.grid_emass.attach(self.label_emass_pick, 0, 1, 2, 1)
+        self.grid_emass.attach(self.compound_combobox, 2, 1, 1, 1)
+        self.grid_emass.attach(self.label_param_mee, 0, 2, 1, 1)
+        self.grid_emass.attach(self.label_param_mehh, 0, 3, 1, 1)
+        self.grid_emass.attach(self.label_param_melh, 0, 4, 1, 1)
+        self.grid_emass.attach(self.entry_param_mee, 2, 2, 1, 1)
+        self.grid_emass.attach(self.entry_param_mehh, 2, 3, 1, 1)
+        self.grid_emass.attach(self.entry_param_melh, 2, 4, 1, 1)
+
+        # main buttons
         self.button1 = gtk.Button('Generate graph!')
         self.buttonExportToOrigin = gtk.Button('Export data to txt')
         self.buttonExportToOrigin.connect("clicked", self.save_to_origin, None)
         self.buttonSaveImage = gtk.Button('Save Graph')
 
-        self.button5 = gtk.Button()
-
-        self.button3 = gtk.Button('Compare two graphs')
-
+        # events
         self.window.connect("delete_event", self.delete_event)
-
         self.window.connect("destroy", self.destroy)
-
-        self.window.set_border_width(30)
-
         self.button1.connect("clicked", self.generate_graph, None)
         self.buttonSaveImage.connect("clicked", self.save_graph, None)
 
-        self.grid.attach(self.label_param_a0, 0, 2, 1, 1)
-        self.grid.attach_next_to(self.label_param_g0, self.label_param_a0, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_eg, self.label_param_g0, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_ef, self.label_param_eg, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_en, self.label_param_ef, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_e, self.label_param_en, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_cp, self.label_param_e, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_T, self.label_param_cp, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_gamma, self.label_param_T, gtk.PositionType.BOTTOM, 1, 1)
+        # Other param entries
+        self.grid.attach(self.label_param_gamma, 0, 2, 1, 1)
         self.grid.attach_next_to(self.label_param_gamma_schodek, self.label_param_gamma, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_mee, self.label_param_gamma_schodek, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_mehh, self.label_param_mee, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_melh, self.label_param_mehh, gtk.PositionType.BOTTOM, 1, 1)
-
-        self.grid.attach(self.entry_param_a0, 1, 2, 1, 1)
-        self.grid.attach_next_to(self.entry_param_g0, self.entry_param_a0, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_eg, self.entry_param_g0, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_ef, self.entry_param_eg, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_en, self.entry_param_ef, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_e, self.entry_param_en, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_cp, self.entry_param_e, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_T, self.entry_param_cp, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_gamma, self.entry_param_T, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_T, self.label_param_gamma_schodek, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_a0, self.label_param_T, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_g0, self.label_param_a0, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach(self.entry_param_gamma, 1, 2, 1, 1)
         self.grid.attach_next_to(self.entry_param_gamma_schodek, self.entry_param_gamma, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_mee, self.entry_param_gamma_schodek, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_mehh,self.entry_param_mee, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_melh,self.entry_param_mehh, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_T, self.entry_param_gamma_schodek, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_a0,self.entry_param_T, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_g0,self.entry_param_a0, gtk.PositionType.BOTTOM, 1, 1)
 
-        self.grid.attach(self.frame1, 3, 0, 6, 14)
-        self.grid.attach(self.button1, 6, 15, 3, 1)
+        # frames
+        self.grid.attach(self.frame_energy, 2, 1, 4, 7)
+        self.grid.attach(self.frame_emass, 2, 8, 4, 7)
+        self.grid.attach(self.frame1, 6, 0, 6, 14)
+
+        # main functionality
+        self.grid.attach(self.button1, 10, 15, 3, 1)
         self.grid.attach_next_to(self.buttonExportToOrigin, self.button1, gtk.PositionType.TOP, 1, 1)
         self.grid.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, gtk.PositionType.RIGHT, 1, 1)
         self.grid.attach_next_to(self.spectrum_combobox, self.buttonExportToOrigin, gtk.PositionType.LEFT, 1, 1)
 
+        self.window.set_border_width(30)
         self.window.show_all()
 
     def main(self):
