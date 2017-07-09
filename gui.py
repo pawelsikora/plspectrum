@@ -22,6 +22,11 @@ class GUI:
             self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
         print(self.c.params.En)
 
+        print(self.c.params.CP)
+        if(self.entry_param_cp.get_text() != ""):
+            self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
+        print(self.c.params.CP)
+
         self.c.params.A0 = float(self.entry_param_a0.get_text())
         self.c.params.g0 = float(self.entry_param_g0.get_text())
         self.c.params.Eg = float(self.entry_param_eg.get_text())
@@ -148,6 +153,17 @@ class GUI:
             self.label_number_of_energy_levels.set_markup("<b>0</b>")
         else:
             self.label_number_of_energy_levels.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+
+    def changed_integral_param(self, widget, data=None):
+        print("text in integral param changed!")
+
+        txt_in_entry = self.entry_param_cp.get_text()
+#        print("Number of ',': " + str(txt_in_entry.count(',')))
+        if txt_in_entry == "":
+            self.label_number_of_integrals.set_markup("<b>0</b>")
+        else:
+            self.label_number_of_integrals.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+
     def on_spectrum_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
@@ -255,9 +271,11 @@ class GUI:
         self.label_param_mee = gtk.Label("mee")
         self.label_param_mehh = gtk.Label("mehh")
         self.label_param_melh = gtk.Label("melh")
-        self.label_emass_pick = gtk.Label("Pick values for specific sc compound")
-        self.label_energy_levels = gtk.Label("Number of energy levels: ")
+        self.label_emass_pick = gtk.Label("Pick values for specific sc compound: ")
+        self.label_energy_levels = gtk.Label("Nb of energy states ")
         self.label_number_of_energy_levels = gtk.Label("0")
+        self.label_integrals = gtk.Label("Nb of integrals ")
+        self.label_number_of_integrals = gtk.Label("0")
 
         self.label_param_a0.set_xalign(1)
         self.label_param_g0.set_xalign(1)
@@ -272,12 +290,13 @@ class GUI:
         self.label_param_gamma.set_xalign(1)
         self.label_param_gamma_schodek.set_xalign(1)
         self.label_energy_levels.set_xalign(1)
-        self.label_number_of_energy_levels.set_xalign(1)
-
-        self.label_param_mee.set_xalign(0.5)
-        self.label_param_mehh.set_xalign(0.5)
-        self.label_param_melh.set_xalign(0.5)
-        self.label_emass_pick.set_xalign(0)
+        self.label_number_of_energy_levels.set_xalign(0.5)
+        self.label_number_of_integrals.set_xalign(0.5)
+        self.label_integrals.set_xalign(0.5)
+        self.label_param_mee.set_xalign(1)
+        self.label_param_mehh.set_xalign(1)
+        self.label_param_melh.set_xalign(1)
+        self.label_emass_pick.set_xalign(0.5)
 
         self.entry_param_a0 = gtk.Entry()
         self.entry_param_g0 = gtk.Entry()
@@ -302,15 +321,17 @@ class GUI:
         self.frame_energy.set_label_align(0.5, 0.5)
         self.grid_energy = gtk.Grid()
         self.grid_energy.set_row_spacing(10)
-        self.grid_energy.set_column_spacing(50)
+        self.grid_energy.set_column_spacing(60)
         self.frame_energy.add(self.grid_energy)
 
         # entries for energy frame
         self.entry_param_eg.set_width_chars(5)
         self.entry_param_en.connect("changed", self.changed_energy_levels, None)
+        self.entry_param_cp.connect("changed", self.changed_integral_param, None)
         self.label_number_of_energy_levels.set_markup("<b>0</b>")
-        self.grid_energy.attach(self.label_energy_levels, 0, 0, 1, 1)
-        self.grid_energy.attach(self.label_number_of_energy_levels, 1, 0, 1, 1)
+        self.label_number_of_integrals.set_markup("<b>0</b>")
+        self.grid_energy.attach(self.label_energy_levels, 5, 0, 1, 1)
+        self.grid_energy.attach(self.label_number_of_energy_levels, 5, 1, 1, 1)
         self.grid_energy.attach(self.label_param_en, 0, 1, 1, 1)
         self.grid_energy.attach(self.label_param_emin, 0, 3, 1, 1)
         self.grid_energy.attach(self.label_param_emax, 0, 4, 1, 1)
@@ -318,27 +339,29 @@ class GUI:
         self.grid_energy.attach(self.label_param_eg, 0, 6, 1, 1)
         self.grid_energy.attach(self.label_param_ef, 0, 7, 1, 1)
         self.grid_energy.attach(self.label_param_cp, 0, 8, 1, 1)
-        self.grid_energy.attach(self.entry_param_en, 1, 1, 2, 1)
+        self.grid_energy.attach(self.entry_param_en, 1, 1, 4, 1)
         self.grid_energy.attach(self.entry_param_emin, 1, 3, 1, 1)
         self.grid_energy.attach(self.entry_param_emax, 1, 4, 1, 1)
         self.grid_energy.attach(self.entry_param_edn, 1, 5, 1, 1)
         self.grid_energy.attach(self.entry_param_eg, 1, 6, 1, 1)
         self.grid_energy.attach(self.entry_param_ef, 1, 7, 1, 1)
-        self.grid_energy.attach(self.entry_param_cp, 1, 8, 2, 1)
+        self.grid_energy.attach(self.entry_param_cp, 1, 8, 4, 1)
+        self.grid_energy.attach(self.label_integrals, 5, 7, 1, 1)
+        self.grid_energy.attach(self.label_number_of_integrals, 5, 8, 1, 1)
 
         # frame electron mass
         self.frame_emass = gtk.Frame(label="Mass of electrons")
         self.frame_emass.set_label_align(0.5, 0.5)
         self.grid_emass = gtk.Grid()
         self.grid_emass.set_row_spacing(20)
-        self.grid_emass.set_column_spacing(50)
+        self.grid_emass.set_column_spacing(70)
         self.frame_emass.add(self.grid_emass)
 
-        self.grid_emass.attach(self.label_emass_pick, 0, 1, 2, 1)
-        self.grid_emass.attach(self.compound_combobox, 2, 1, 1, 1)
-        self.grid_emass.attach(self.label_param_mee, 0, 2, 1, 1)
-        self.grid_emass.attach(self.label_param_mehh, 0, 3, 1, 1)
-        self.grid_emass.attach(self.label_param_melh, 0, 4, 1, 1)
+        self.grid_emass.attach(self.label_emass_pick, 0, 1, 3, 1)
+        self.grid_emass.attach(self.compound_combobox, 3, 1, 1, 1)
+        self.grid_emass.attach(self.label_param_mee, 0, 2, 2, 1)
+        self.grid_emass.attach(self.label_param_mehh, 0, 3, 2, 1)
+        self.grid_emass.attach(self.label_param_melh, 0, 4, 2, 1)
         self.grid_emass.attach(self.entry_param_mee, 2, 2, 1, 1)
         self.grid_emass.attach(self.entry_param_mehh, 2, 3, 1, 1)
         self.grid_emass.attach(self.entry_param_melh, 2, 4, 1, 1)
