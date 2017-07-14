@@ -15,17 +15,20 @@ from QSpectrum import Spectrum_generator
 class GUI:
 
     def generate_graph(self, widget, data=None):
-        self.c = Spectrum_generator()
-        print(self.c.params.En)
+        try:
+            print("Try var with filename:" + self.read_own_graph_file_name)
+        except AttributeError:
+            print("File is NOT set")
+            self.c = Spectrum_generator()
+        else:
+            print("File is set")
+            self.c = Spectrum_generator(self.read_own_graph_file_name)
 
         if(self.entry_param_en.get_text() != ""):
             self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
-        print(self.c.params.En)
 
-        print(self.c.params.CP)
         if(self.entry_param_cp.get_text() != ""):
             self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
-        print(self.c.params.CP)
 
         self.c.params.A0 = float(self.entry_param_a0.get_text())
         self.c.params.g0 = float(self.entry_param_g0.get_text())
@@ -135,6 +138,24 @@ class GUI:
             self.c.pb.savev(dialog_graph.get_filename(), "png", [], [])
 
         dialog_graph.destroy()
+
+    def on_read_data_for_graph_toogled(self, widget, data=None):
+        self.spectrum_choice = self.spectrum_combobox.get_active()
+
+        dialog_own_graph_file = gtk.FileChooserDialog("Please choose file to open", None,
+            gtk.FileChooserAction.OPEN,
+            (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+             gtk.STOCK_OPEN, gtk.ResponseType.OK))
+
+        response = dialog_own_graph_file.run()
+        if response == gtk.ResponseType.OK:
+            print("Open clicked")
+            print("File selected: " + dialog_own_graph_file.get_filename())
+
+        self.read_own_graph_file_name = dialog_own_graph_file.get_filename()
+        self.entry_readOwnFileForGraph.set_text(self.read_own_graph_file_name)
+
+        dialog_own_graph_file.destroy()
 
     def delete_event(self, widget, event, data=None):
         print("delete event occurred")
@@ -313,8 +334,6 @@ class GUI:
         self.entry_param_mee = gtk.Entry()
         self.entry_param_mehh = gtk.Entry()
         self.entry_param_melh = gtk.Entry()
-        self.entry_param_test = gtk.Entry()
-        self.entry_param_test2 = gtk.Entry()
 
         # frame energy
         self.frame_energy = gtk.Frame(label="Energies")
@@ -366,17 +385,20 @@ class GUI:
         self.grid_emass.attach(self.entry_param_mehh, 2, 3, 1, 1)
         self.grid_emass.attach(self.entry_param_melh, 2, 4, 1, 1)
 
-        # main buttons
+        # main buttons/entries
         self.button1 = gtk.Button('Generate graph!')
         self.buttonExportToOrigin = gtk.Button('Export data to txt')
         self.buttonExportToOrigin.connect("clicked", self.save_to_origin, None)
         self.buttonSaveImage = gtk.Button('Save Graph')
+        self.check_if_graph_your_data = gtk.CheckButton("Draw own data on graph")
+        self.entry_readOwnFileForGraph = gtk.Entry()
 
         # events
         self.window.connect("delete_event", self.delete_event)
         self.window.connect("destroy", self.destroy)
         self.button1.connect("clicked", self.generate_graph, None)
         self.buttonSaveImage.connect("clicked", self.save_graph, None)
+        self.check_if_graph_your_data.connect("toggled", self.on_read_data_for_graph_toogled, None)
 
         # Other param entries
         self.grid.attach(self.label_param_gamma, 0, 2, 1, 1)
@@ -399,7 +421,9 @@ class GUI:
         self.grid.attach(self.button1, 10, 15, 3, 1)
         self.grid.attach_next_to(self.buttonExportToOrigin, self.button1, gtk.PositionType.TOP, 1, 1)
         self.grid.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, gtk.PositionType.RIGHT, 1, 1)
-        self.grid.attach_next_to(self.spectrum_combobox, self.buttonExportToOrigin, gtk.PositionType.LEFT, 1, 1)
+        self.grid.attach_next_to(self.spectrum_combobox, self.button1, gtk.PositionType.LEFT, 1, 1)
+        self.grid.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, gtk.PositionType.LEFT, 1, 1)
+        self.grid.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, gtk.PositionType.LEFT, 3, 1)
 
         self.window.set_border_width(30)
         self.window.show_all()
