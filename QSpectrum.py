@@ -17,7 +17,7 @@ __version__ = "0.1"
 
 class Spectrum_generator:
 
-    def __init__(self):
+    def __init__(self, file_with_measured_data="None"):
         self.DOS = 0
         self.DOS2 = 0
         self.Hevisajd = 0
@@ -27,6 +27,11 @@ class Spectrum_generator:
         self.Delty= 0
         self.params = Parameters()
         self.params.update()
+        self.x = [] 
+        self.y = []
+        self.z = []
+        print("In init filename: " + file_with_measured_data)
+        self.f_measured_data = file_with_measured_data
 
     def delta_cal(self):
         for i in range(0, len(self.params.En)):
@@ -136,21 +141,30 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_beta(self):
-        self.count = len(open('LAMBDA_Zmierzona.txt', 'rU').readlines())
-        self.zmierzone_x = open('LAMBDA_Zmierzona.txt', 'rU').readlines()
-        self.zmierzone_y = open('Zmierzone1.txt', 'rU').readlines()
-
-        for i in range(0, self.count):
-            self.zmierzone_x[i] = float(self.zmierzone_x[i].strip())
-            self.zmierzone_y[i] = float(self.zmierzone_y[i].strip())
-
-        data_plt = plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
-             self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), \
-             'b', self.zmierzone_x, self.zmierzone_y, 'k.', lw=2)
-
-        self.linex = data_plt[0].get_data()
-        self.liney = data_plt[1].get_data()
-        self.linez = data_plt[2].get_data()
+        print("File with measured data name: " + self.f_measured_data)
+        if (self.f_measured_data != "None"):
+            self.x, self.y = np.loadtxt(self.f_measured_data, delimiter=' ', \
+                                        usecols=(0,1), unpack=True)
+            print(self.x)
+            print(self.y)
+            print("X and Y updated!")
+            data_plt = plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
+                 self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), \
+                 'b', self.x, self.y, 'k.', lw=2)
+            self.linex = data_plt[0].get_data()
+            self.liney = data_plt[1].get_data()
+            self.linez = data_plt[2].get_data()
+        else:
+            print("X/Y NOT updated!")
+            print(self.x)
+            print(self.y)
+            print(self.z)
+            data_plt = plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
+                 self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), \
+                 'b', lw=2)    
+            self.linex = data_plt[0].get_data()
+            self.liney = data_plt[1].get_data()
+        
         plt.savefig("plot_beta_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
         self.generated_beta = gtk.Image.new_from_file("plot_beta_tmp.png")
