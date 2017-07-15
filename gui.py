@@ -31,24 +31,37 @@ class GUI:
             self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
 
         self.c.params.A0 = float(self.entry_param_a0.get_text())
+        print("A0 after change: " + str(self.c.params.A0))
         self.c.params.g0 = float(self.entry_param_g0.get_text())
+        print("g0 after change: " + str(self.c.params.g0))
         self.c.params.Eg = float(self.entry_param_eg.get_text())
+        print("Eg after change: " + str(self.c.params.Eg))
+        self.c.params.Ef = float(self.entry_param_ef.get_text())
+        print("Eg after change: " + str(self.c.params.Ef))
+        self.c.params.E = np.arange(float(self.entry_param_emin.get_text()),
+                                    float(self.entry_param_emax.get_text()),
+                                    float(self.entry_param_edn.get_text()))
+        print("E after change: " + str(self.c.params.E))
         self.c.params.T = float(self.entry_param_T.get_text())
+        print("T after change: " + str(self.c.params.T))
         self.c.params.gamma = float(self.entry_param_gamma.get_text())
+        print("gamma after change: " + str(self.c.params.gamma))
         self.c.params.gamma_schodek = float(self.entry_param_gamma_schodek.get_text())
+        print("gamma_schodek after change: " + str(self.c.params.gamma_schodek))
 
         if (self.c.params.A0) == 0 or self.c.params.g0  == 0 or \
            self.c.params.Eg == 0 or self.c.params.T == 0 or \
            self.c.params.gamma == 0 or self.c.params.gamma_schodek == 0:
-              print("some value is 0!")
+              print("some values are set to 0!")
               dialog1 = gtk.MessageDialog(None, 0, gtk.MessageType.INFO,
                   gtk.ButtonsType.OK, "Values can't be zero!")
               dialog1.format_secondary_text(
-                  "some of your values appears to be empty. Please check it and type again")
+                  "Some of your values appears to be empty. Please check it and type again")
               dialog1.run()
               dialog1.destroy()
 
-        self.c.params.LAMBDA = (1.24 / self.c.params.Eg)
+        self.c.params.LAMBDA = (1.24 / self.c.params.E)
+        print("LAMBDA after change: " + str(self.c.params.LAMBDA))
         self.spectrum_choice = self.spectrum_combobox.get_active()
 
         if self.spectrum_choice == 1:
@@ -58,7 +71,6 @@ class GUI:
            self.currentGraph = self.c.generated_alfa
         elif self.spectrum_choice == 2:
            self.frame1.remove(self.currentGraph)
-           self.c = Spectrum_generator()
            self.c.calculate_all()
            self.c.plot_widmo_beta()
            self.currentGraph = self.c.generated_beta
@@ -166,20 +178,16 @@ class GUI:
         gtk.main_quit()
 
     def changed_energy_levels(self, widget, data=None):
-        print("text in energy levels changed!")
-
         txt_in_entry = self.entry_param_en.get_text()
-#        print("Number of ',': " + str(txt_in_entry.count(',')))
+
         if txt_in_entry == "":
             self.label_number_of_energy_levels.set_markup("<b>0</b>")
         else:
             self.label_number_of_energy_levels.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
 
     def changed_integral_param(self, widget, data=None):
-        print("text in integral param changed!")
-
         txt_in_entry = self.entry_param_cp.get_text()
-#        print("Number of ',': " + str(txt_in_entry.count(',')))
+
         if txt_in_entry == "":
             self.label_number_of_integrals.set_markup("<b>0</b>")
         else:
