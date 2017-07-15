@@ -13,7 +13,6 @@ class Parameters:
 		self.gamma = 0.001#
 		self.gamma2 = 1.0#
 		self.gamma_schodek=35.0
-		self.gamma_schodek2=5.0
 		self.Ef = 0.5 * self.Eg
 		self.E = np.arange(1.08,1.35,0.001)#
 		self.En = np.array([0.49475 + 0.69223 - self.Eg, 0.54384+0.7062 - self.Eg, 0.60827 + 0.7275 - self.Eg])
@@ -29,8 +28,6 @@ class Parameters:
 		self.Hevisajd=np.zeros(len(self.E))
 		self.Delty=np.zeros(len(self.E))
 		self.Epocz=np.zeros(len(self.E))
-		self.Widmo=np.zeros(len(self.E))
-		self.Prawd=np.zeros(len(self.E))
 		self.LAMBDA = (1.24 / self.E)
 	
 	def get_A0(self):
@@ -54,9 +51,6 @@ class Parameters:
 	def get_gamma_schodek(self):
 		return self.gamma_schodek
 	
-	def get_gamma_schodek2(self):
-		return self.gamma_schodek2
-	
 	def get_Ef(self):
 		return self.Ef
 
@@ -78,9 +72,6 @@ class Parameters:
 
 	def set_gamma_schodek(self, gamma_schodek):
 		self.gamma_schodek = gamma_schodek
-
-	def set_gamma_schodek2(self, gamma_schodek2):
-		self.gamma_schodek_2 = gamma_schodek2
 
 	def read_params_from_UI(self):
 		return 0
