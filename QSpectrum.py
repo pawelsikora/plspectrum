@@ -27,10 +27,6 @@ class Spectrum_generator:
         self.Delty= 0
         self.params = Parameters()
         self.params.update()
-        self.x = [] 
-        self.y = []
-        self.z = []
-        print("In init filename: " + file_with_measured_data)
         self.f_measured_data = file_with_measured_data
 
     def delta_cal(self):
@@ -65,14 +61,13 @@ class Spectrum_generator:
                 self.params.A0 * \
                 Delta(self.params.E - self.params.Eg - self.params.En[i])
 
-
     def energia_pocz(self):
-        #'Epocz' to tak naprawde schodek, ucina energie!
         for i in range(0,len(self.params.E)):
             if self.params.E[i] <= (self.params.Eg+self.params.En[0]):
                 self.params.Epocz[i]=0.0
             else:
                 self.params.Epocz[i]=1.0
+
     def widmo_fd(self):
         self.Widmo_fd = self.Pik * self.DOS * \
             distribution_FD(self.params.E, self.params.Ef, self.params.T)
@@ -82,15 +77,14 @@ class Spectrum_generator:
             distribution_Boltzmann(0.0, self.params.E, self.params.T)
 
     def widmo_planck(self):
-        #Widmo PL QW ale obliczone sposobem jak dla Bulku (3D) -
-        #absorpcja jedynie zmieniona na dwuwymiarowa! Przypadek rownowagi termodynamicznej!
         self.Widmo5 = (1.0 / self.params.E) * self.DOS * \
         distribution_Planck(self.params.E, self.params.T) * self.params.E
 
     def prawdopodobienstwo(self):
+        self.Prawd = np.zeros(len(self.params.E))
         for j in range(0, len(self.params.En)):
             for i in range(0, len(self.params.E)):
-             self.params.Prawd[i] = self.params.Prawd[i] + \
+             self.Prawd[i] = self.Prawd[i] + \
              Calka( self.params.E, pik_Gaussowski(self.params.E, \
                  self.params.E[i], self.params.gamma) * self.DOS * \
                 distribution_Boltzmann(0.0, self.params.E, self.params.T) )
@@ -100,15 +94,15 @@ class Spectrum_generator:
             yield i
 
     def widmo(self):
-        self.params.Widmo = self.params.Prawd * self.params.E
+        self.Widmo = self.Prawd * self.params.E
 
     def save_to_files(self, plik, plik2):
         self.plik = open(plik, 'w')
         self.plik2 = open(plik2, 'w')
 
-        for i in self.generate(len(self.params.Widmo)):
+        for i in self.generate(len(self.Widmo)):
             self.plik.write(str(self.params.LAMBDA[i]) + ' ' \
-                       + str(self.params.Widmo[i]/max(self.params.Widmo)) \
+                       + str(self.Widmo[i]/max(self.Widmo)) \
                        + '\n')
 
         for i in self.generate(len(self.params.LAMBDA)):
@@ -147,20 +141,18 @@ class Spectrum_generator:
                                         usecols=(0,1), unpack=True)
             print(self.x)
             print(self.y)
+            print(self.Widmo)
             print("X and Y updated!")
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
-                 self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), \
+                 self.params.LAMBDA, self.Widmo/max(self.Widmo), \
                  'b', self.x, self.y, 'k.', lw=2)
             self.linex = data_plt[0].get_data()
             self.liney = data_plt[1].get_data()
             self.linez = data_plt[2].get_data()
         else:
             print("X/Y NOT updated!")
-            print(self.x)
-            print(self.y)
-            print(self.z)
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo5/max(self.Widmo5), 'r', \
-                 self.params.LAMBDA, self.params.Widmo/max(self.params.Widmo), \
+                 self.params.LAMBDA, self.Widmo/max(self.Widmo), \
                  'b', lw=2)    
             self.linex = data_plt[0].get_data()
             self.liney = data_plt[1].get_data()
