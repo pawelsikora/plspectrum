@@ -49,6 +49,16 @@ class GUI:
         self.c.params.gamma_schodek = float(self.entry_param_gamma_schodek.get_text())
         print("gamma_schodek after change: " + str(self.c.params.gamma_schodek))
 
+        if (self.entry_param_mee.get_text() != ""):
+            self.c.params.me = float(self.entry_param_mee.get_text())
+        print("gamma_schodek after change: " + str(self.c.params.me))
+        if (self.entry_param_mehh.get_text() != ""):
+            self.c.params.mehh = float(self.entry_param_mehh.get_text())
+        print("gamma_schodek after change: " + str(self.c.params.mehh))
+        if (self.entry_param_melh.get_text() != ""):
+            self.c.params.melh = float(self.entry_param_melh.get_text())
+        print("gamma_schodek after change: " + str(self.c.params.melh))
+
         if (self.c.params.A0) == 0 or self.c.params.g0  == 0 or \
            self.c.params.Eg == 0 or self.c.params.T == 0 or \
            self.c.params.gamma == 0 or self.c.params.gamma_schodek == 0:
@@ -74,6 +84,21 @@ class GUI:
            self.c.calculate_all()
            self.c.plot_widmo_beta()
            self.currentGraph = self.c.generated_beta
+        elif self.spectrum_choice == 3:
+           self.frame1.remove(self.currentGraph)
+           self.c.calculate_all()
+           self.c.plot_widmo_cbdos()
+           self.currentGraph = self.c.generated_cbdos
+        elif self.spectrum_choice == 4:
+           self.frame1.remove(self.currentGraph)
+           self.c.calculate_all()
+           self.c.plot_widmo_vbdos()
+           self.currentGraph = self.c.generated_vbdos
+        elif self.spectrum_choice == 5:
+           self.frame1.remove(self.currentGraph)
+           self.c.calculate_all()
+           self.c.plot_widmo_jdos()
+           self.currentGraph = self.c.generated_jdos
         else:
            dialog = gtk.MessageDialog(None, 0, gtk.MessageType.INFO,
                gtk.ButtonsType.OK, "Wrong choice!")
@@ -262,9 +287,11 @@ class GUI:
         # combobox for choosing spectrum
         spectrum_store = gtk.ListStore(int, str)
         spectrum_store.append([1, "--- Choose spectrum ---"])
-        spectrum_store.append([11, "Widmo alfa"])
-        spectrum_store.append([12, "Widmo beta"])
-        spectrum_store.append([2, "Widmo gamma"])
+        spectrum_store.append([11, "Absorption"])
+        spectrum_store.append([12, "Spectrum"])
+        spectrum_store.append([21, "CB DOS"])
+        spectrum_store.append([22, "VB DOS"])
+        spectrum_store.append([3, "JDOS"])
         self.spectrum_combobox = gtk.ComboBox.new_with_model_and_entry(spectrum_store)
         self.spectrum_combobox.connect("changed", self.on_spectrum_combo_changed)
         self.spectrum_combobox.set_entry_text_column(1)
