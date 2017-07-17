@@ -20,6 +20,8 @@ class Spectrum_generator:
     def __init__(self, file_with_measured_data="None"):
         self.DOS = 0
         self.DOS2 = 0
+        self.dosC = 0
+        self.dosV = 0
         self.Hevisajd = 0
         self.Pik = 0
         self.Normal = 0
@@ -60,6 +62,12 @@ class Spectrum_generator:
             self.Delty = self.Delty + \
                 self.params.A0 * \
                 Delta(self.params.E - self.params.Eg - self.params.En[i])
+
+            self.dosC = self.dosC + self.params.g0 * self.params.me * \
+                (Schodek(self.params.Ec - self.params.CB[i]))
+
+            self.dosV = self.dosV + self.params.g0 * self.params.mehh * \
+                (Schodek(self.params.Ev - self.params.VB[i]))
 
     def energia_pocz(self):
         for i in range(0,len(self.params.E)):
@@ -160,6 +168,17 @@ class Spectrum_generator:
         plt.savefig("plot_beta_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
         self.generated_beta = gtk.Image.new_from_file("plot_beta_tmp.png")
+        plt.close()
+
+    def plot_widmo_cbdos(self):
+        one = plt.plot(self.params.Ec, self.dosC, 'k', lw=2)
+
+        self.linex = one[0].get_data()
+        self.liney = one[0].get_data()
+
+        plt.savefig("plot_cbdos_tmp.png")
+        self.pb = Pixbuf.new_from_file("plot_cbdos_tmp.png")
+        self.generated_cbdos = gtk.Image.new_from_file("plot_cbdos_tmp.png")
         plt.close()
 
 if __name__ == "__main__":
