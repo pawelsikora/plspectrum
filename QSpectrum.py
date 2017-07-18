@@ -5,15 +5,11 @@ from gui import *
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import pickle
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.font_manager import FontProperties
 from gi.repository.GdkPixbuf import Pixbuf
+from gi.repository.Gtk import Image
 
 __author__ = "Piotr Ruszala"
 __version__ = "0.1"
-
 
 class Spectrum_generator:
 
@@ -149,7 +145,7 @@ class Spectrum_generator:
 
         plt.savefig("plot_alfa_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_alfa_tmp.png")
-        self.generated_alfa = gtk.Image.new_from_file("plot_alfa_tmp.png")
+        self.generated_alfa = Image.new_from_file("plot_alfa_tmp.png")
         plt.close()
 
     def plot_widmo_beta(self):
@@ -177,7 +173,7 @@ class Spectrum_generator:
         
         plt.savefig("plot_beta_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
-        self.generated_beta = gtk.Image.new_from_file("plot_beta_tmp.png")
+        self.generated_beta = Image.new_from_file("plot_beta_tmp.png")
         plt.close()
 
     def plot_widmo_cbdos(self):
@@ -187,7 +183,7 @@ class Spectrum_generator:
 
         plt.savefig("plot_cbdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_cbdos_tmp.png")
-        self.generated_cbdos = gtk.Image.new_from_file("plot_cbdos_tmp.png")
+        self.generated_cbdos = Image.new_from_file("plot_cbdos_tmp.png")
         plt.close()
 
     def plot_widmo_vbdos(self):
@@ -197,7 +193,7 @@ class Spectrum_generator:
 
         plt.savefig("plot_vbdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_vbdos_tmp.png")
-        self.generated_vbdos = gtk.Image.new_from_file("plot_vbdos_tmp.png")
+        self.generated_vbdos = Image.new_from_file("plot_vbdos_tmp.png")
         plt.close()
 
     def plot_widmo_jdos(self):
@@ -211,7 +207,7 @@ class Spectrum_generator:
 
         plt.savefig("plot_jdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_jdos_tmp.png")
-        self.generated_jdos = gtk.Image.new_from_file("plot_jdos_tmp.png")
+        self.generated_jdos = Image.new_from_file("plot_jdos_tmp.png")
         plt.close()
 
 if __name__ == "__main__":

@@ -1,16 +1,9 @@
-from gi import pygtkcompat
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtk3cairo import FigureCanvasGTK3Cairo as FigureCanvas
 import numpy as np
-import itertools as it
-import csv
-
-pygtkcompat.enable()
-pygtkcompat.enable_gtk(version='3.0')
-
-import gtk
-
 from QSpectrum import Spectrum_generator
+
+import gi
+gi.require_version  ('Gtk', '3.0')
+from gi.repository import Gtk
 
 class GUI:
 
@@ -63,8 +56,8 @@ class GUI:
            self.c.params.Eg == 0 or self.c.params.T == 0 or \
            self.c.params.gamma == 0 or self.c.params.gamma_schodek == 0:
               print("some values are set to 0!")
-              dialog1 = gtk.MessageDialog(None, 0, gtk.MessageType.INFO,
-                  gtk.ButtonsType.OK, "Values can't be zero!")
+              dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+                  Gtk.ButtonsType.OK, "Values can't be zero!")
               dialog1.format_secondary_text(
                   "Some of your values appears to be empty. Please check it and type again")
               dialog1.run()
@@ -93,8 +86,8 @@ class GUI:
            self.c.plot_widmo_jdos()
            self.currentGraph = self.c.generated_jdos
         else:
-           dialog = gtk.MessageDialog(None, 0, gtk.MessageType.INFO,
-               gtk.ButtonsType.OK, "Wrong choice!")
+           dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+               Gtk.ButtonsType.OK, "Wrong choice!")
            dialog.format_secondary_text(
                "You have not chosen any spectrum to generate. Please choose one and try again")
            dialog.run()
@@ -105,15 +98,15 @@ class GUI:
 
     def save_to_origin(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
-        dialog_origin = gtk.FileChooserDialog("Please choose a file", None,
-           gtk.FileChooserAction.SAVE,
-           (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-           gtk.STOCK_SAVE, gtk.ResponseType.OK))
+        dialog_origin = Gtk.FileChooserDialog("Please choose a file", None,
+           Gtk.FileChooserAction.SAVE,
+           (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+           Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
 
         if self.spectrum_choice == 1:
            dialog_origin.set_current_name('alfa_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
-           if response == gtk.ResponseType.OK:
+           if response == Gtk.ResponseType.OK:
                print("Save clicked")
                print("File selected: " + dialog_origin.get_filename())
 
@@ -130,7 +123,7 @@ class GUI:
         elif self.spectrum_choice == 2:
            dialog_origin.set_current_name('beta_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
-           if response == gtk.ResponseType.OK:
+           if response == Gtk.ResponseType.OK:
                print("Save clicked")
                print("File selected: " + dialog_origin.get_filename())
 
@@ -147,7 +140,7 @@ class GUI:
         elif self.spectrum_choice == 3:
            dialog_origin.set_current_name('cbdos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
-           if response == gtk.ResponseType.OK:
+           if response == Gtk.ResponseType.OK:
                print("Save clicked")
                print("File selected: " + dialog_origin.get_filename())
 
@@ -164,7 +157,7 @@ class GUI:
         elif self.spectrum_choice == 4:
            dialog_origin.set_current_name('vbdos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
-           if response == gtk.ResponseType.OK:
+           if response == Gtk.ResponseType.OK:
                print("Save clicked")
                print("File selected: " + dialog_origin.get_filename())
 
@@ -181,7 +174,7 @@ class GUI:
         elif self.spectrum_choice == 5:
            dialog_origin.set_current_name('jdos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
-           if response == gtk.ResponseType.OK:
+           if response == Gtk.ResponseType.OK:
                print("Save clicked")
                print("File selected: " + dialog_origin.get_filename())
 
@@ -198,10 +191,10 @@ class GUI:
     def save_graph(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
 
-        dialog_graph = gtk.FileChooserDialog("Please choose the name of a file to save", None,
-            gtk.FileChooserAction.SAVE,
-            (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-             gtk.STOCK_SAVE, gtk.ResponseType.OK))
+        dialog_graph = Gtk.FileChooserDialog("Please choose the name of a file to save", None,
+            Gtk.FileChooserAction.SAVE,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
 
         if self.spectrum_choice == 1:
             dialog_graph.set_current_name('alfa_spectrum_graph_Untitled.png')
@@ -209,7 +202,7 @@ class GUI:
             dialog_graph.set_current_name('beta_spectrum_graph_Untitled.png')
 
         response = dialog_graph.run()
-        if response == gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.OK:
             print("Save clicked")
             print("File selected: " + dialog_graph.get_filename())
             self.c.pb.savev(dialog_graph.get_filename(), "png", [], [])
@@ -219,13 +212,13 @@ class GUI:
     def on_read_data_for_graph_toogled(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
 
-        dialog_own_graph_file = gtk.FileChooserDialog("Please choose file to open", None,
-            gtk.FileChooserAction.OPEN,
-            (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-             gtk.STOCK_OPEN, gtk.ResponseType.OK))
+        dialog_own_graph_file = Gtk.FileChooserDialog("Please choose file to open", None,
+            Gtk.FileChooserAction.OPEN,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 
         response = dialog_own_graph_file.run()
-        if response == gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.OK:
             print("Open clicked")
             print("File selected: " + dialog_own_graph_file.get_filename())
 
@@ -240,7 +233,7 @@ class GUI:
 
     def destroy(self, widget, data=None):
         print("destroy signal occurred")
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def changed_energy_levels(self, widget, data=None):
         txt_in_entry = self.entry_param_en.get_text()
@@ -312,66 +305,66 @@ class GUI:
 
     def __init__(self):
         self.i = 0
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window = Gtk.Window()
         self.window.set_size_request(1400, 450)
         self.window.set_icon_from_file('icon.png')
-        self.grid = gtk.Grid()
+        self.grid = Gtk.Grid()
 
         self.grid.set_column_spacing(20)
         self.grid.set_row_spacing(20)
         self.window.add(self.grid)
 
-        self.initGraph = gtk.Image.new_from_file('init_frame_image.png')
+        self.initGraph = Gtk.Image.new_from_file('init_frame_image.png')
         self.currentGraph = self.initGraph
 
         # combobox for choosing spectrum
-        spectrum_store = gtk.ListStore(int, str)
+        spectrum_store = Gtk.ListStore(int, str)
         spectrum_store.append([1, "--- Choose spectrum ---"])
         spectrum_store.append([11, "Absorption"])
         spectrum_store.append([12, "Spectrum"])
         spectrum_store.append([21, "CB DOS"])
         spectrum_store.append([22, "VB DOS"])
         spectrum_store.append([3, "JDOS"])
-        self.spectrum_combobox = gtk.ComboBox.new_with_model_and_entry(spectrum_store)
+        self.spectrum_combobox = Gtk.ComboBox.new_with_model_and_entry(spectrum_store)
         self.spectrum_combobox.connect("changed", self.on_spectrum_combo_changed)
         self.spectrum_combobox.set_entry_text_column(1)
         self.spectrum_combobox.set_active(0)
 
         # combobox for choosing compound
-        compound_store = gtk.ListStore(int, str)
+        compound_store = Gtk.ListStore(int, str)
         compound_store.append([1, "--- Custom ---"])
         compound_store.append([11, "GaAs"])
         compound_store.append([12, "InAs"])
         compound_store.append([2, "GaInAs"])
-        self.compound_combobox = gtk.ComboBox.new_with_model_and_entry(compound_store)
+        self.compound_combobox = Gtk.ComboBox.new_with_model_and_entry(compound_store)
         self.compound_combobox.connect("changed", self.on_compound_combo_changed)
         self.compound_combobox.set_entry_text_column(1)
         self.compound_combobox.set_active(0)
 
-        self.frame1 = gtk.Frame(label="Graph")
+        self.frame1 = Gtk.Frame(label="Graph")
         self.frame1.set_label_align(0.5, 0.5)
         self.frame1.add(self.currentGraph)
 
-        self.label_param_a0 = gtk.Label("A0")
-        self.label_param_g0 = gtk.Label("g0")
-        self.label_param_eg = gtk.Label("Eg")
-        self.label_param_ef = gtk.Label("Ef")
-        self.label_param_en = gtk.Label("En")
-        self.label_param_emin = gtk.Label("Emin")
-        self.label_param_emax = gtk.Label("Emax")
-        self.label_param_edn = gtk.Label("Edn")
-        self.label_param_cp = gtk.Label("CP")
-        self.label_param_T = gtk.Label("T")
-        self.label_param_gamma = gtk.Label("Gamma")
-        self.label_param_gamma_schodek = gtk.Label("Gamma schodek")
-        self.label_param_mee = gtk.Label("mee")
-        self.label_param_mehh = gtk.Label("mehh")
-        self.label_param_melh = gtk.Label("melh")
-        self.label_emass_pick = gtk.Label("Pick values for specific sc compound: ")
-        self.label_energy_levels = gtk.Label("Nb of energy states ")
-        self.label_number_of_energy_levels = gtk.Label("0")
-        self.label_integrals = gtk.Label("Nb of integrals ")
-        self.label_number_of_integrals = gtk.Label("0")
+        self.label_param_a0 = Gtk.Label("A0")
+        self.label_param_g0 = Gtk.Label("g0")
+        self.label_param_eg = Gtk.Label("Eg")
+        self.label_param_ef = Gtk.Label("Ef")
+        self.label_param_en = Gtk.Label("En")
+        self.label_param_emin = Gtk.Label("Emin")
+        self.label_param_emax = Gtk.Label("Emax")
+        self.label_param_edn = Gtk.Label("Edn")
+        self.label_param_cp = Gtk.Label("CP")
+        self.label_param_T = Gtk.Label("T")
+        self.label_param_gamma = Gtk.Label("Gamma")
+        self.label_param_gamma_schodek = Gtk.Label("Gamma schodek")
+        self.label_param_mee = Gtk.Label("mee")
+        self.label_param_mehh = Gtk.Label("mehh")
+        self.label_param_melh = Gtk.Label("melh")
+        self.label_emass_pick = Gtk.Label("Pick values for specific sc compound: ")
+        self.label_energy_levels = Gtk.Label("Nb of energy states ")
+        self.label_number_of_energy_levels = Gtk.Label("0")
+        self.label_integrals = Gtk.Label("Nb of integrals ")
+        self.label_number_of_integrals = Gtk.Label("0")
 
         self.label_param_a0.set_xalign(1)
         self.label_param_g0.set_xalign(1)
@@ -394,26 +387,26 @@ class GUI:
         self.label_param_melh.set_xalign(1)
         self.label_emass_pick.set_xalign(0.5)
 
-        self.entry_param_a0 = gtk.Entry()
-        self.entry_param_g0 = gtk.Entry()
-        self.entry_param_eg = gtk.Entry()
-        self.entry_param_ef = gtk.Entry()
-        self.entry_param_en = gtk.Entry()
-        self.entry_param_emin = gtk.Entry()
-        self.entry_param_emax = gtk.Entry()
-        self.entry_param_edn = gtk.Entry()
-        self.entry_param_cp = gtk.Entry()
-        self.entry_param_T = gtk.Entry()
-        self.entry_param_gamma = gtk.Entry()
-        self.entry_param_gamma_schodek = gtk.Entry()
-        self.entry_param_mee = gtk.Entry()
-        self.entry_param_mehh = gtk.Entry()
-        self.entry_param_melh = gtk.Entry()
+        self.entry_param_a0 = Gtk.Entry()
+        self.entry_param_g0 = Gtk.Entry()
+        self.entry_param_eg = Gtk.Entry()
+        self.entry_param_ef = Gtk.Entry()
+        self.entry_param_en = Gtk.Entry()
+        self.entry_param_emin = Gtk.Entry()
+        self.entry_param_emax = Gtk.Entry()
+        self.entry_param_edn = Gtk.Entry()
+        self.entry_param_cp = Gtk.Entry()
+        self.entry_param_T = Gtk.Entry()
+        self.entry_param_gamma = Gtk.Entry()
+        self.entry_param_gamma_schodek = Gtk.Entry()
+        self.entry_param_mee = Gtk.Entry()
+        self.entry_param_mehh = Gtk.Entry()
+        self.entry_param_melh = Gtk.Entry()
 
         # frame energy
-        self.frame_energy = gtk.Frame(label="Energies")
+        self.frame_energy = Gtk.Frame(label="Energies")
         self.frame_energy.set_label_align(0.5, 0.5)
-        self.grid_energy = gtk.Grid()
+        self.grid_energy = Gtk.Grid()
         self.grid_energy.set_row_spacing(10)
         self.grid_energy.set_column_spacing(60)
         self.frame_energy.add(self.grid_energy)
@@ -444,9 +437,9 @@ class GUI:
         self.grid_energy.attach(self.label_number_of_integrals, 5, 8, 1, 1)
 
         # frame electron mass
-        self.frame_emass = gtk.Frame(label="Mass of electrons")
+        self.frame_emass = Gtk.Frame(label="Mass of electrons")
         self.frame_emass.set_label_align(0.5, 0.5)
-        self.grid_emass = gtk.Grid()
+        self.grid_emass = Gtk.Grid()
         self.grid_emass.set_row_spacing(20)
         self.grid_emass.set_column_spacing(70)
         self.frame_emass.add(self.grid_emass)
@@ -461,12 +454,12 @@ class GUI:
         self.grid_emass.attach(self.entry_param_melh, 2, 4, 1, 1)
 
         # main buttons/entries
-        self.button1 = gtk.Button('Generate graph!')
-        self.buttonExportToOrigin = gtk.Button('Export data to txt')
+        self.button1 = Gtk.Button('Generate graph!')
+        self.buttonExportToOrigin = Gtk.Button('Export data to txt')
         self.buttonExportToOrigin.connect("clicked", self.save_to_origin, None)
-        self.buttonSaveImage = gtk.Button('Save Graph')
-        self.check_if_graph_your_data = gtk.CheckButton("Draw own data on graph")
-        self.entry_readOwnFileForGraph = gtk.Entry()
+        self.buttonSaveImage = Gtk.Button('Save Graph')
+        self.check_if_graph_your_data = Gtk.CheckButton("Draw own data on graph")
+        self.entry_readOwnFileForGraph = Gtk.Entry()
 
         # events
         self.window.connect("delete_event", self.delete_event)
@@ -477,15 +470,15 @@ class GUI:
 
         # Other param entries
         self.grid.attach(self.label_param_gamma, 0, 2, 1, 1)
-        self.grid.attach_next_to(self.label_param_gamma_schodek, self.label_param_gamma, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_T, self.label_param_gamma_schodek, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_a0, self.label_param_T, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.label_param_g0, self.label_param_a0, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_gamma_schodek, self.label_param_gamma, Gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_T, self.label_param_gamma_schodek, Gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_a0, self.label_param_T, Gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.label_param_g0, self.label_param_a0, Gtk.PositionType.BOTTOM, 1, 1)
         self.grid.attach(self.entry_param_gamma, 1, 2, 1, 1)
-        self.grid.attach_next_to(self.entry_param_gamma_schodek, self.entry_param_gamma, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_T, self.entry_param_gamma_schodek, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_a0,self.entry_param_T, gtk.PositionType.BOTTOM, 1, 1)
-        self.grid.attach_next_to(self.entry_param_g0,self.entry_param_a0, gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_gamma_schodek, self.entry_param_gamma, Gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_T, self.entry_param_gamma_schodek, Gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_a0,self.entry_param_T, Gtk.PositionType.BOTTOM, 1, 1)
+        self.grid.attach_next_to(self.entry_param_g0,self.entry_param_a0, Gtk.PositionType.BOTTOM, 1, 1)
 
         # frames
         self.grid.attach(self.frame_energy, 2, 1, 4, 7)
@@ -494,14 +487,14 @@ class GUI:
 
         # main functionality
         self.grid.attach(self.button1, 10, 15, 3, 1)
-        self.grid.attach_next_to(self.buttonExportToOrigin, self.button1, gtk.PositionType.TOP, 1, 1)
-        self.grid.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, gtk.PositionType.RIGHT, 1, 1)
-        self.grid.attach_next_to(self.spectrum_combobox, self.button1, gtk.PositionType.LEFT, 1, 1)
-        self.grid.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, gtk.PositionType.LEFT, 1, 1)
-        self.grid.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, gtk.PositionType.LEFT, 3, 1)
+        self.grid.attach_next_to(self.buttonExportToOrigin, self.button1, Gtk.PositionType.TOP, 1, 1)
+        self.grid.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, Gtk.PositionType.RIGHT, 1, 1)
+        self.grid.attach_next_to(self.spectrum_combobox, self.button1, Gtk.PositionType.LEFT, 1, 1)
+        self.grid.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, Gtk.PositionType.LEFT, 1, 1)
+        self.grid.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, Gtk.PositionType.LEFT, 3, 1)
 
         self.window.set_border_width(30)
         self.window.show_all()
 
     def main(self):
-        gtk.main()
+        Gtk.main()
