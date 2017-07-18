@@ -16,7 +16,14 @@ class Parameters:
 		self.Ef = 0.5 * self.Eg
 		self.E = np.arange(1.08,1.35,0.001)#
 		self.En = np.array([0.49475 + 0.69223 - self.Eg, 0.54384+0.7062 - self.Eg, 0.60827 + 0.7275 - self.Eg])
+		self.Ec = np.arange(0.45,0.65,0.001)
+		self.Ev=np.arange(-0.75,-0.65,0.001)
 		self.CP = np.array([0.98453, 0.94166, 0.79406])
+		self.CB = np.array([0.49475,0.54384,0.60827])
+		self.VB = np.array([-0.69223,-0.7062,-0.7275])
+		self.me = 0.063#
+		self.mehh = 0.51#
+		self.melh = 0.082#
 			
 		self.a=np.zeros(len(self.E))
 		self.g_bulk=np.zeros(len(self.E))
