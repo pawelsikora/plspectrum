@@ -181,10 +181,9 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_cbdos(self):
-        one = plt.plot(self.params.Ec, self.dosC, 'k', lw=2)
+        data_plt_cb = plt.plot(self.params.Ec, self.dosC, 'k', lw=2)
 
-        self.linex = one[0].get_data()
-        self.liney = one[0].get_data()
+        self.linex = data_plt_cb[0].get_data()
 
         plt.savefig("plot_cbdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_cbdos_tmp.png")
@@ -192,10 +191,9 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_vbdos(self):
-        one = plt.plot(self.params.Ev, self.dosV[::-1], 'g', lw=2)
+        data_plt_vb = plt.plot(self.params.Ev, self.dosV[::-1], 'g', lw=2)
 
-        self.linex = one[0].get_data()
-        self.liney = one[0].get_data()
+        self.linex = data_plt_vb[0].get_data()
 
         plt.savefig("plot_vbdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_vbdos_tmp.png")
@@ -203,12 +201,13 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_jdos(self):
-        one = plt.plot(self.params.E, self.JDOS/max(self.JDOS), 'r', \
+        data_plt_j = plt.plot(self.params.E, self.JDOS/max(self.JDOS), 'r', \
                        self.params.E, self.JDOS2/max(self.JDOS2), 'b', \
                        self.params.E, self.Hevisajd/max(self.Hevisajd), lw=2)
 
-        self.linex = one[0].get_data()
-        self.liney = one[0].get_data()
+        self.linex = data_plt_j[0].get_data()
+        self.liney = data_plt_j[1].get_data()
+        self.linez = data_plt_j[2].get_data()
 
         plt.savefig("plot_jdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_jdos_tmp.png")

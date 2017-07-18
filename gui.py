@@ -112,19 +112,19 @@ class GUI:
 
     def save_to_origin(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
-        if self.spectrum_choice == 1:
-           dialog_alfa = gtk.FileChooserDialog("Please choose a file", None,
-               gtk.FileChooserAction.SAVE,
-               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-                gtk.STOCK_SAVE, gtk.ResponseType.OK))
+        dialog_origin = gtk.FileChooserDialog("Please choose a file", None,
+           gtk.FileChooserAction.SAVE,
+           (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+           gtk.STOCK_SAVE, gtk.ResponseType.OK))
 
-           dialog_alfa.set_current_name('alfa_spectrum_origin_Untitled.txt')
-           response = dialog_alfa.run()
+        if self.spectrum_choice == 1:
+           dialog_origin.set_current_name('alfa_spectrum_origin_Untitled.txt')
+           response = dialog_origin.run()
            if response == gtk.ResponseType.OK:
                print("Save clicked")
-               print("File selected: " + dialog_alfa.get_filename())
+               print("File selected: " + dialog_origin.get_filename())
 
-               f = open(dialog_alfa.get_filename(), 'wb')
+               f = open(dialog_origin.get_filename(), 'wb')
                data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1], self.c.linez[1]])
                data = data.T
                somestr = "X Y1 Y2 Y3\n"
@@ -132,20 +132,16 @@ class GUI:
                np.savetxt(f, data, fmt='%.7f %.7f %.7f %.7f')
                f.close()
 
-           dialog_alfa.destroy()
-        elif self.spectrum_choice == 2:
-           dialog_beta = gtk.FileChooserDialog("Please choose a file", None,
-               gtk.FileChooserAction.SAVE,
-               (gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
-                gtk.STOCK_SAVE, gtk.ResponseType.OK))
+           dialog_origin.destroy()
 
-           dialog_beta.set_current_name('beta_spectrum_origin_Untitled.txt')
-           response = dialog_beta.run()
+        elif self.spectrum_choice == 2:
+           dialog_origin.set_current_name('beta_spectrum_origin_Untitled.txt')
+           response = dialog_origin.run()
            if response == gtk.ResponseType.OK:
                print("Save clicked")
-               print("File selected: " + dialog_beta.get_filename())
+               print("File selected: " + dialog_origin.get_filename())
 
-               f = open(dialog_beta.get_filename(), 'wb')
+               f = open(dialog_origin.get_filename(), 'wb')
                data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1]])
                data = data.T
                somestr = "X Y1 Y2\n"
@@ -153,7 +149,58 @@ class GUI:
                np.savetxt(f, data, fmt='%.7f %.7f %.7f')
                f.close()
 
-           dialog_beta.destroy()
+           dialog_origin.destroy()
+
+        elif self.spectrum_choice == 3:
+           dialog_origin.set_current_name('cbdos_spectrum_origin_Untitled.txt')
+           response = dialog_origin.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_origin.get_filename())
+
+               f = open(dialog_origin.get_filename(), 'wb')
+               data = np.array([self.c.linex[0], self.c.linex[1]])
+               data = data.T
+               somestr = "X Y1\n"
+               f.write(somestr.encode('ascii'))
+               np.savetxt(f, data, fmt='%.7f %.7f')
+               f.close()
+
+           dialog_origin.destroy()
+
+        elif self.spectrum_choice == 4:
+           dialog_origin.set_current_name('vbdos_spectrum_origin_Untitled.txt')
+           response = dialog_origin.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_origin.get_filename())
+
+               f = open(dialog_origin.get_filename(), 'wb')
+               data = np.array([self.c.linex[0], self.c.linex[1]])
+               data = data.T
+               somestr = "X Y1\n"
+               f.write(somestr.encode('ascii'))
+               np.savetxt(f, data, fmt='%.7f %.7f')
+               f.close()
+
+           dialog_origin.destroy()
+
+        elif self.spectrum_choice == 5:
+           dialog_origin.set_current_name('jdos_spectrum_origin_Untitled.txt')
+           response = dialog_origin.run()
+           if response == gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_origin.get_filename())
+
+               f = open(dialog_origin.get_filename(), 'wb')
+               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1], self.c.linez[1]])
+               data = data.T
+               somestr = "X Y1 Y2 Y3\n"
+               f.write(somestr.encode('ascii'))
+               np.savetxt(f, data, fmt='%.7f %.7f %.7f %.7f')
+               f.close()
+
+           dialog_origin.destroy()
 
     def save_graph(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
