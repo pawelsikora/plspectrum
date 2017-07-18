@@ -20,6 +20,8 @@ class Spectrum_generator:
     def __init__(self, file_with_measured_data="None"):
         self.DOS = 0
         self.DOS2 = 0
+        self.JDOS = 0
+        self.JDOS2 = 0
         self.dosC = 0
         self.dosV = 0
         self.Hevisajd = 0
@@ -68,6 +70,14 @@ class Spectrum_generator:
 
             self.dosV = self.dosV + self.params.g0 * self.params.mehh * \
                 (Schodek(self.params.Ev - self.params.VB[i]))
+
+            self.JDOS = self.JDOS + self.params.g0 * \
+                (DOS_rozmyty_erf(self.params.E, self.params.Eg + self.params.En[i], \
+                                 self.params.gamma_schodek))
+
+            self.JDOS2 = self.JDOS2 + self.params.g0 * \
+                (DOS_rozmyty_cauchy(self.params.E, self.params.Eg + self.params.En[i], \
+                                    self.params.gamma_schodek))
 
     def energia_pocz(self):
         for i in range(0,len(self.params.E)):
@@ -179,6 +189,30 @@ class Spectrum_generator:
         plt.savefig("plot_cbdos_tmp.png")
         self.pb = Pixbuf.new_from_file("plot_cbdos_tmp.png")
         self.generated_cbdos = gtk.Image.new_from_file("plot_cbdos_tmp.png")
+        plt.close()
+
+    def plot_widmo_vbdos(self):
+        one = plt.plot(self.params.Ev, self.dosV[::-1], 'g', lw=2)
+
+        self.linex = one[0].get_data()
+        self.liney = one[0].get_data()
+
+        plt.savefig("plot_vbdos_tmp.png")
+        self.pb = Pixbuf.new_from_file("plot_vbdos_tmp.png")
+        self.generated_vbdos = gtk.Image.new_from_file("plot_vbdos_tmp.png")
+        plt.close()
+
+    def plot_widmo_jdos(self):
+        one = plt.plot(self.params.E, self.JDOS/max(self.JDOS), 'r', \
+                       self.params.E, self.JDOS2/max(self.JDOS2), 'b', \
+                       self.params.E, self.Hevisajd/max(self.Hevisajd), lw=2)
+
+        self.linex = one[0].get_data()
+        self.liney = one[0].get_data()
+
+        plt.savefig("plot_jdos_tmp.png")
+        self.pb = Pixbuf.new_from_file("plot_jdos_tmp.png")
+        self.generated_jdos = gtk.Image.new_from_file("plot_jdos_tmp.png")
         plt.close()
 
 if __name__ == "__main__":
