@@ -74,29 +74,22 @@ class GUI:
         print("LAMBDA after change: " + str(self.c.params.LAMBDA))
         self.spectrum_choice = self.spectrum_combobox.get_active()
 
+        self.frame1.remove(self.currentGraph)
+        self.c.calculate_all()
+
         if self.spectrum_choice == 1:
-           self.frame1.remove(self.currentGraph)
-           self.c.calculate_all()
            self.c.plot_widmo_alfa()
            self.currentGraph = self.c.generated_alfa
         elif self.spectrum_choice == 2:
-           self.frame1.remove(self.currentGraph)
-           self.c.calculate_all()
            self.c.plot_widmo_beta()
            self.currentGraph = self.c.generated_beta
         elif self.spectrum_choice == 3:
-           self.frame1.remove(self.currentGraph)
-           self.c.calculate_all()
            self.c.plot_widmo_cbdos()
            self.currentGraph = self.c.generated_cbdos
         elif self.spectrum_choice == 4:
-           self.frame1.remove(self.currentGraph)
-           self.c.calculate_all()
            self.c.plot_widmo_vbdos()
            self.currentGraph = self.c.generated_vbdos
         elif self.spectrum_choice == 5:
-           self.frame1.remove(self.currentGraph)
-           self.c.calculate_all()
            self.c.plot_widmo_jdos()
            self.currentGraph = self.c.generated_jdos
         else:
