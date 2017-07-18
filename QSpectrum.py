@@ -143,9 +143,10 @@ class Spectrum_generator:
         self.liney = two[0].get_data()
         self.linez = three[0].get_data()
 
-        plt.savefig("plot_alfa_tmp.png")
+        plt.savefig("plot_alfa_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_alfa_tmp.png")
         self.generated_alfa = Image.new_from_file("plot_alfa_tmp.png")
+        plt.savefig("plot_alfa_tmp.png", dpi=200)
         plt.close()
 
     def plot_widmo_beta(self):
@@ -171,9 +172,10 @@ class Spectrum_generator:
             self.linex = data_plt[0].get_data()
             self.liney = data_plt[1].get_data()
         
-        plt.savefig("plot_beta_tmp.png")
+        plt.savefig("plot_beta_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
         self.generated_beta = Image.new_from_file("plot_beta_tmp.png")
+        plt.savefig("plot_beta_tmp.png", dpi=200)
         plt.close()
 
     def plot_widmo_cbdos(self):
@@ -181,9 +183,10 @@ class Spectrum_generator:
 
         self.linex = data_plt_cb[0].get_data()
 
-        plt.savefig("plot_cbdos_tmp.png")
+        plt.savefig("plot_cbdos_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_cbdos_tmp.png")
         self.generated_cbdos = Image.new_from_file("plot_cbdos_tmp.png")
+        plt.savefig("plot_cbdos_tmp.png", dpi=200)
         plt.close()
 
     def plot_widmo_vbdos(self):
@@ -191,9 +194,10 @@ class Spectrum_generator:
 
         self.linex = data_plt_vb[0].get_data()
 
-        plt.savefig("plot_vbdos_tmp.png")
+        plt.savefig("plot_vbdos_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_vbdos_tmp.png")
         self.generated_vbdos = Image.new_from_file("plot_vbdos_tmp.png")
+        plt.savefig("plot_vbdos_tmp.png", dpi=200)
         plt.close()
 
     def plot_widmo_jdos(self):
@@ -205,9 +209,10 @@ class Spectrum_generator:
         self.liney = data_plt_j[1].get_data()
         self.linez = data_plt_j[2].get_data()
 
-        plt.savefig("plot_jdos_tmp.png")
+        plt.savefig("plot_jdos_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_jdos_tmp.png")
         self.generated_jdos = Image.new_from_file("plot_jdos_tmp.png")
+        plt.savefig("plot_jdos_tmp.png", dpi=200)
         plt.close()
 
 if __name__ == "__main__":
