@@ -14,17 +14,17 @@ __version__ = "0.1"
 class Spectrum_generator:
 
     def __init__(self, file_with_measured_data="None"):
-        self.DOS = np.zeros(len(self.params.E))
-        self.DOS2 = np.zeros(len(self.params.E))
-        self.JDOS = np.zeros(len(self.params.E))
-        self.JDOS2 = np.zeros(len(self.params.E))
-        self.dosC = np.zeros(len(self.params.Ec))
-        self.dosV = np.zeros(len(self.params.Ev))
-        self.Hevisajd = np.zeros(len(self.params.E))
-        self.Pik = np.zeros(len(self.params.E))
-        self.Normal = np.zeros(len(self.params.E))
-        self.Pik_mieszany = np.zeros(len(self.params.E))
-        self.Delty = np.zeros(len(self.params.E))
+        self.DOS = 0
+        self.DOS2 = 0
+        self.JDOS = 0
+        self.JDOS2 = 0
+        self.dosC = 0
+        self.dosV = 0
+        self.Hevisajd = 0
+        self.Pik = 0
+        self.Normal = 0
+        self.Pik_mieszany = 0
+        self.Delty = 0
 
         self.params = Parameters()
         self.params.update()
@@ -97,7 +97,7 @@ class Spectrum_generator:
 
     def prawdopodobienstwo(self):
         self.Prawd = np.zeros(len(self.params.E))
-        for j in range(0, len(self.params.E)):
+        for i in range(0, len(self.params.E)):
              self.Prawd[i] = Calka( self.params.E, pik_Gaussowski(self.params.E, \
                              self.params.E[i], self.params.gamma) * self.DOS * \
                              distribution_Boltzmann(0.0, self.params.E, self.params.T) )

@@ -5,6 +5,8 @@ import gi
 gi.require_version  ('Gtk', '3.0')
 from gi.repository import Gtk
 
+list_store = Gtk.ListStore(int, str, Gtk.Entry)
+
 class GUI:
 
     def generate_graph(self, widget, data=None):
@@ -17,30 +19,45 @@ class GUI:
             print("File is set")
             self.c = Spectrum_generator(self.read_own_graph_file_name)
 
+        self.i = 0
+        self.j = 0
+
+        for row in list_store:
+            entry = list_store.get_value(row.iter, 2)
+
+            if  entry.get_text() == "":
+                self.i += 1
+
+            if  entry.get_text() == "0":
+                self.j += 1
+
+        if self.i != 0 or self.j != 0:
+            dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+                Gtk.ButtonsType.OK, "Values can't be empty/zero!")
+            dialog1.format_secondary_text(
+                "Some of your entries for parameters appears to be empty/zero. Please check it and type again")
+            dialog1.run()
+            dialog1.destroy()
+
+            return -1
+
         if(self.entry_param_en.get_text() != ""):
             self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
+        print("En after change: " + str(self.c.params.En))
 
         if(self.entry_param_cp.get_text() != ""):
             self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
 
         self.c.params.A0 = float(self.entry_param_a0.get_text())
-        print("A0 after change: " + str(self.c.params.A0))
         self.c.params.g0 = float(self.entry_param_g0.get_text())
-        print("g0 after change: " + str(self.c.params.g0))
         self.c.params.Eg = float(self.entry_param_eg.get_text())
-        print("Eg after change: " + str(self.c.params.Eg))
         self.c.params.Ef = float(self.entry_param_ef.get_text())
-        print("Eg after change: " + str(self.c.params.Ef))
         self.c.params.E = np.arange(float(self.entry_param_emin.get_text()),
                                     float(self.entry_param_emax.get_text()),
                                     float(self.entry_param_edn.get_text()))
-        print("E after change: " + str(self.c.params.E))
         self.c.params.T = float(self.entry_param_T.get_text())
-        print("T after change: " + str(self.c.params.T))
         self.c.params.gamma = float(self.entry_param_gamma.get_text())
-        print("gamma after change: " + str(self.c.params.gamma))
         self.c.params.gamma_schodek = float(self.entry_param_gamma_schodek.get_text())
-        print("gamma_schodek after change: " + str(self.c.params.gamma_schodek))
 
         if (self.entry_param_mee.get_text() != ""):
             self.c.params.me = float(self.entry_param_mee.get_text())
@@ -51,17 +68,6 @@ class GUI:
         if (self.entry_param_melh.get_text() != ""):
             self.c.params.melh = float(self.entry_param_melh.get_text())
         print("gamma_schodek after change: " + str(self.c.params.melh))
-
-        if (self.c.params.A0) == 0 or self.c.params.g0  == 0 or \
-           self.c.params.Eg == 0 or self.c.params.T == 0 or \
-           self.c.params.gamma == 0 or self.c.params.gamma_schodek == 0:
-              print("some values are set to 0!")
-              dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
-                  Gtk.ButtonsType.OK, "Values can't be zero!")
-              dialog1.format_secondary_text(
-                  "Some of your values appears to be empty. Please check it and type again")
-              dialog1.run()
-              dialog1.destroy()
 
         self.c.params.LAMBDA = (1.24 / self.c.params.E)
         print("LAMBDA after change: " + str(self.c.params.LAMBDA))
@@ -402,6 +408,19 @@ class GUI:
         self.entry_param_mee = Gtk.Entry()
         self.entry_param_mehh = Gtk.Entry()
         self.entry_param_melh = Gtk.Entry()
+
+        list_store.append([0, "Entry,a0", self.entry_param_a0])
+        list_store.append([1, "Entry,g0", self.entry_param_g0])
+        list_store.append([2, "Entry,eg", self.entry_param_eg])
+        list_store.append([3, "Entry,ef", self.entry_param_ef])
+        list_store.append([4, "Entry,en", self.entry_param_en])
+        list_store.append([5, "Entry,emax", self.entry_param_emax])
+        list_store.append([6, "Entry,edn", self.entry_param_edn])
+        list_store.append([7, "Entry,cp", self.entry_param_cp])
+        list_store.append([8, "Entry,T", self.entry_param_T])
+        list_store.append([9, "Entry,gamma", self.entry_param_gamma])
+        list_store.append([10, "Entry,gamma_schodek", self.entry_param_gamma_schodek])
+
 
         # frame energy
         self.frame_energy = Gtk.Frame(label="Energies")
