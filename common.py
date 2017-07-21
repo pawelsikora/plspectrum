@@ -4,27 +4,27 @@ from scipy import special
 
 k = codata.value('Boltzmann constant in eV/K')
 
-class Parameters:	
+class Parameters:
 	def __init__(self):
 		self.A0 = 10.0
-		self.g0 = 1.0
-		self.Eg = 1.1828#
-		self.T = 300#
-		self.gamma = 0.001#
-		self.gamma2 = 1.0#
-		self.gamma_schodek=35.0
+		self.g0 = 10.0
+		self.Eg = 1.1828
+		self.T = 300
+		self.gamma = 0.001
+		self.gamma2 = 0.029
+		self.gamma_schodek = 0.029
 		self.Ef = 0.5 * self.Eg
-		self.E = np.arange(1.08,1.35,0.001)#
-		self.En = np.array([0.49475 + 0.69223 - self.Eg, 0.54384+0.7062 - self.Eg, 0.60827 + 0.7275 - self.Eg])
+		self.E = np.arange(1.08,1.35,0.001)
+		self.En = np.array([self.Eg])
 		self.Ec = np.arange(0.45,0.65,0.001)
-		self.Ev=np.arange(-0.75,-0.65,0.001)
-		self.CP = np.array([0.98453, 0.94166, 0.79406])
+		self.Ev = np.arange(-0.75,-0.65,0.001)
+		self.CP = np.array([1.0])
 		self.CB = np.array([0.49475,0.54384,0.60827])
 		self.VB = np.array([-0.69223,-0.7062,-0.7275])
-		self.me = 0.063#
-		self.mehh = 0.51#
-		self.melh = 0.082#
-			
+		self.me = 0.063
+		self.mehh = 0.51
+		self.melh = 0.082
+
 		self.a=np.zeros(len(self.E))
 		self.g_bulk=np.zeros(len(self.E))
 		self.DOS=np.zeros(len(self.E))
@@ -36,7 +36,7 @@ class Parameters:
 		self.Delty=np.zeros(len(self.E))
 		self.Epocz=np.zeros(len(self.E))
 		self.LAMBDA = (1.24 / self.E)
-	
+
 	def get_A0(self):
 		return self.A0
 
@@ -54,12 +54,27 @@ class Parameters:
 
 	def get_gamma2(self):
 		return self.gamma2
-	
+
 	def get_gamma_schodek(self):
 		return self.gamma_schodek
-	
+
 	def get_Ef(self):
 		return self.Ef
+
+	def get_E(self):
+		return self.E
+
+	def get_En(self):
+		return self.En
+
+	def get_CP(self):
+		return self.CP
+
+	def get_LAMBDA(self):
+		return self.LAMBDA
+
+	def set_A0(self, A0):
+		self.A0 = A0
 
 	def set_g0(self, g0):
 		self.g0 = g0
@@ -67,22 +82,34 @@ class Parameters:
 	def set_Eg(self, Eg):
 		self.Eg = Eg
 		self.Ef = 0.5 * Eg
-	
+
 	def set_T(self, T):
 		self.T = T
 
+	def set_E(self, E):
+		self.E = E
+
+	def set_En(self, En):
+		self.En = En
+
+	def set_CP(self, CP):
+		self.CP = CP
+
 	def set_gamma(self, gamma):
 		self.gamma = gamma
-	
+
 	def set_gamma2(self, gamma2):
 		self.gamma2 = gamma2
 
 	def set_gamma_schodek(self, gamma_schodek):
 		self.gamma_schodek = gamma_schodek
 
+	def set_LAMBDA(self, LAMBDA):
+		self.LAMBDA = (1.24 / self.E)
+
 	def read_params_from_UI(self):
 		return 0
-	
+
 	def update(self):
 		return 0
 
@@ -103,21 +130,21 @@ def Delta(x):
 	return Y
 
 def Calka(arg,fun):
-	C = 0
+	C = 0.0
 	for i in range(0,len(arg)-1):
 		C = C + (0.5 * (arg[i+1] - arg[i]) * (fun[i+1] + fun[i]))
 	return C
 
-def DOS_rozmyty_erf(Ene, E_prz, W): #Rozmyte schodki - funkcja bledu erf
-	return 0.5 * ( special.erf( (Ene - E_prz) * W ) + 1.0 )
+def DOS_rozmyty_erf(Ene, E_prz, W):
+	return 0.5 * ( special.erf( (Ene - E_prz) / W ) + 1.0 )
 
 def DOS_rozmyty_cauchy(Ene, E_prz, W): #Rozmyte schodki - funkcja dystrybuanty rozkladu Cauchyego
-	return ((1.0 / np.pi) * np.arctan((Ene - E_prz) * W) + 0.5)
+	return ((1.0 / np.pi) * np.arctan((Ene - E_prz) / W) + 0.5)
 
 def Ogon_gestosci_stanow(Ene, E_prz, Amplituda0, w): #Rozmycie krawedzi absorpcji
 	Y = 0.0
 	if Ene <= E_prz:
-		Y = Amplituda0 * (np.exp((Ene - E_prz) * w ))
+		Y = Amplituda0 * (np.exp((Ene - E_prz) / W ))
 	elif Ene > E_prz:
 		Y = Amplituda0
 	return Y
