@@ -19,19 +19,27 @@ class GUI:
             print("File is set")
             self.c = Spectrum_generator(self.read_own_graph_file_name)
 
-        self.i = 0
-        self.j = 0
+        self.empty_cnt = 0
+        self.not_a_number_cnt = 0
 
         for row in list_store:
             entry = list_store.get_value(row.iter, 2)
 
-            if  entry.get_text() == "":
-                self.i += 1
+            gt = entry.get_text()
 
-            if  entry.get_text() == "0":
-                self.j += 1
+            if gt == "" or gt == "0":
+                self.empty_cnt += 1
 
-        if self.i != 0 or self.j != 0:
+            es = list_store.get_value(row.iter, 1)
+
+            if es != "Entry,en" or es != "Entry,cp":
+                try:
+                    tmp = float(gt)
+                except ValueError:
+                    self.not_a_number_cnt += 1
+                    print("'" + list_store.get_value(row.iter, 1) + "'" + " is not a number!")
+
+        if self.empty_cnt != 0:
             dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
                 Gtk.ButtonsType.OK, "Values can't be empty/zero!")
             dialog1.format_secondary_text(
@@ -41,13 +49,18 @@ class GUI:
 
             return -1
 
-        if(self.entry_param_en.get_text() != ""):
-            self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
-        print("En after change: " + str(self.c.params.En))
+        if self.not_a_number_cnt != 0:
+            dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+                Gtk.ButtonsType.OK, "Values can't be string!")
+            dialog1.format_secondary_text(
+                "Some of your entries are not a number. Please check it and type again")
+            dialog1.run()
+            dialog1.destroy()
 
-        if(self.entry_param_cp.get_text() != ""):
-            self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
+            return -1
 
+        self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
+        self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
         self.c.params.A0 = float(self.entry_param_a0.get_text())
         self.c.params.g0 = float(self.entry_param_g0.get_text())
         self.c.params.Eg = float(self.entry_param_eg.get_text())
@@ -58,37 +71,30 @@ class GUI:
         self.c.params.T = float(self.entry_param_T.get_text())
         self.c.params.gamma = float(self.entry_param_gamma.get_text())
         self.c.params.gamma_schodek = float(self.entry_param_gamma_schodek.get_text())
-
-        if (self.entry_param_mee.get_text() != ""):
-            self.c.params.me = float(self.entry_param_mee.get_text())
-        print("gamma_schodek after change: " + str(self.c.params.me))
-        if (self.entry_param_mehh.get_text() != ""):
-            self.c.params.mehh = float(self.entry_param_mehh.get_text())
-        print("gamma_schodek after change: " + str(self.c.params.mehh))
-        if (self.entry_param_melh.get_text() != ""):
-            self.c.params.melh = float(self.entry_param_melh.get_text())
-        print("gamma_schodek after change: " + str(self.c.params.melh))
+        self.c.params.me = float(self.entry_param_mee.get_text())
+        self.c.params.mehh = float(self.entry_param_mehh.get_text())
+        self.c.params.melh = float(self.entry_param_melh.get_text())
 
         self.c.params.LAMBDA = (1.24 / self.c.params.E)
-        print("LAMBDA after change: " + str(self.c.params.LAMBDA))
-        self.spectrum_choice = self.spectrum_combobox.get_active()
 
         self.frame1.remove(self.currentGraph)
         self.c.calculate_all()
 
-        if self.spectrum_choice == 1:
+        sc = self.spectrum_combobox.get_active()
+
+        if sc == 1:
            self.c.plot_widmo_alfa()
            self.currentGraph = self.c.generated_alfa
-        elif self.spectrum_choice == 2:
+        elif sc == 2:
            self.c.plot_widmo_beta()
            self.currentGraph = self.c.generated_beta
-        elif self.spectrum_choice == 3:
+        elif sc == 3:
            self.c.plot_widmo_cbdos()
            self.currentGraph = self.c.generated_cbdos
-        elif self.spectrum_choice == 4:
+        elif sc == 4:
            self.c.plot_widmo_vbdos()
            self.currentGraph = self.c.generated_vbdos
-        elif self.spectrum_choice == 5:
+        elif sc == 5:
            self.c.plot_widmo_jdos()
            self.currentGraph = self.c.generated_jdos
         else:
@@ -420,6 +426,9 @@ class GUI:
         list_store.append([8, "Entry,T", self.entry_param_T])
         list_store.append([9, "Entry,gamma", self.entry_param_gamma])
         list_store.append([10, "Entry,gamma_schodek", self.entry_param_gamma_schodek])
+        list_store.append([11, "Entry,me", self.entry_param_mee])
+        list_store.append([12, "Entry,mehh", self.entry_param_mehh])
+        list_store.append([13, "Entry,melh", self.entry_param_melh])
 
 
         # frame energy
