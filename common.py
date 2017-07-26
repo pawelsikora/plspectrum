@@ -12,7 +12,7 @@ class Parameters:
 		self.T = 300
 		self.gamma = 0.001
 		self.gamma2 = 0.029
-		self.gamma_schodek = 0.029
+		self.step_func_gamma = 0.029
 		self.Ef = 0.5 * self.Eg
 		self.E = np.arange(1.08,1.35,0.001)
 		self.En = np.array([self.Eg])
@@ -55,8 +55,8 @@ class Parameters:
 	def get_gamma2(self):
 		return self.gamma2
 
-	def get_gamma_schodek(self):
-		return self.gamma_schodek
+	def get_step_func_gamma(self):
+		return self.step_func_gamma
 
 	def get_Ef(self):
 		return self.Ef
@@ -101,8 +101,8 @@ class Parameters:
 	def set_gamma2(self, gamma2):
 		self.gamma2 = gamma2
 
-	def set_gamma_schodek(self, gamma_schodek):
-		self.gamma_schodek = gamma_schodek
+	def set_step_func_gamma(self, step_func_gamma):
+		self.step_func_gamma = step_func_gamma
 
 	def set_LAMBDA(self, LAMBDA):
 		self.LAMBDA = (1.24 / self.E)

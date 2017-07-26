@@ -34,11 +34,11 @@ class Spectrum_generator:
         for i in range(0, len(self.params.En)):
             self.DOS = self.DOS + self.params.g0 * self.params.CP[i] * \
                 (DOS_rozmyty_erf(self.params.E, \
-                 self.params.En[i], self.params.gamma_schodek) )
+                 self.params.En[i], self.params.step_func_gamma) )
 
             self.DOS2 = self.DOS2 + self.params.g0 * self.params.CP[i] * \
                 ( DOS_rozmyty_cauchy(self.params.E, \
-                 self.params.En[i], self.params.gamma_schodek) )
+                 self.params.En[i], self.params.step_func_gamma) )
 
             self.Hevisajd = self.Hevisajd + self.params.g0 * \
                 self.params.CP[i] * \
@@ -70,11 +70,11 @@ class Spectrum_generator:
 
             self.JDOS = self.JDOS + self.params.g0 * \
                 (DOS_rozmyty_erf(self.params.E, self.params.En[i], \
-                                 self.params.gamma_schodek))
+                                 self.params.step_func_gamma))
 
             self.JDOS2 = self.JDOS2 + self.params.g0 * \
                 (DOS_rozmyty_cauchy(self.params.E, self.params.En[i], \
-                                    self.params.gamma_schodek))
+                                    self.params.step_func_gamma))
 
     def energia_pocz(self):
         for i in range(0,len(self.params.E)):
