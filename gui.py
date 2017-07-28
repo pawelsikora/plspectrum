@@ -154,6 +154,7 @@ class GUI:
                somestr = "X Y1 Y2\n"
                f.write(somestr.encode('ascii'))
                np.savetxt(f, data, fmt='%.7f %.7f %.7f')
+               self.write_params_to_file(f)
                f.close()
 
            dialog_origin.destroy()
@@ -171,6 +172,7 @@ class GUI:
                somestr = "X Y1\n"
                f.write(somestr.encode('ascii'))
                np.savetxt(f, data, fmt='%.7f %.7f')
+               self.write_params_to_file(f)
                f.close()
 
            dialog_origin.destroy()
@@ -188,6 +190,7 @@ class GUI:
                somestr = "X Y1\n"
                f.write(somestr.encode('ascii'))
                np.savetxt(f, data, fmt='%.7f %.7f')
+               self.write_params_to_file(f)
                f.close()
 
            dialog_origin.destroy()
@@ -205,6 +208,7 @@ class GUI:
                somestr = "X Y1 Y2 Y3\n"
                f.write(somestr.encode('ascii'))
                np.savetxt(f, data, fmt='%.7f %.7f %.7f %.7f')
+               self.write_params_to_file(f)
                f.close()
 
            dialog_origin.destroy()
