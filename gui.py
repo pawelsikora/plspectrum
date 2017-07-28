@@ -5,7 +5,7 @@ import gi
 gi.require_version  ('Gtk', '3.0')
 from gi.repository import Gtk
 
-list_store = Gtk.ListStore(int, str, Gtk.Entry)
+list_store = Gtk.ListStore(int, str, Gtk.Entry, str)
 
 class GUI:
 
@@ -108,6 +108,14 @@ class GUI:
         self.frame1.add(self.currentGraph)
         self.window.show_all()
 
+    def write_params_to_file(self, filename):
+        filename.write("--- Parameters used for generated graph ---\n")
+        for row in list_store:
+            entry = list_store.get_value(row.iter, 2)
+
+            gt = entry.get_text()
+            filename.write(list_store.get_value(row.iter, 3) + " = " + gt + "\n")
+
     def save_to_origin(self, widget, data=None):
         self.spectrum_choice = self.spectrum_combobox.get_active()
         dialog_origin = Gtk.FileChooserDialog("Please choose a file", None,
@@ -128,6 +136,7 @@ class GUI:
                somestr = "X Y1 Y2 Y3\n"
                f.write(somestr.encode('ascii'))
                np.savetxt(f, data, fmt='%.7f %.7f %.7f %.7f')
+               self.write_params_to_file(f)
                f.close()
 
            dialog_origin.destroy()
@@ -362,13 +371,13 @@ class GUI:
         self.label_param_eg = Gtk.Label("Eg [eV]")
         self.label_param_ef = Gtk.Label("Ef [eV]")
         self.label_param_en = Gtk.Label("  En [eV]")
-        self.label_param_emin = Gtk.Label("Emin")
-        self.label_param_emax = Gtk.Label("Emax")
-        self.label_param_edn = Gtk.Label("E step")
+        self.label_param_emin = Gtk.Label("Emin [eV]")
+        self.label_param_emax = Gtk.Label("Emax [eV]")
+        self.label_param_edn = Gtk.Label("Estep [eV]")
         self.label_param_cp = Gtk.Label("CP")
         self.label_param_T = Gtk.Label("T [K]")
-        self.label_param_gamma = Gtk.Label("Gamma")
-        self.label_param_step_func_gamma = Gtk.Label(" Step func gamma")
+        self.label_param_gamma = Gtk.Label("  Gamma peak [eV]")
+        self.label_param_step_func_gamma = Gtk.Label("Gamma Step [eV]")
         self.label_param_mee = Gtk.Label("      mee")
         self.label_param_mehh = Gtk.Label("mehh")
         self.label_param_melh = Gtk.Label("melh")
@@ -415,20 +424,20 @@ class GUI:
         self.entry_param_mehh = Gtk.Entry()
         self.entry_param_melh = Gtk.Entry()
 
-        list_store.append([0, "Entry,a0", self.entry_param_a0])
-        list_store.append([1, "Entry,g0", self.entry_param_g0])
-        list_store.append([2, "Entry,eg", self.entry_param_eg])
-        list_store.append([3, "Entry,ef", self.entry_param_ef])
-        list_store.append([4, "Entry,en", self.entry_param_en])
-        list_store.append([5, "Entry,emax", self.entry_param_emax])
-        list_store.append([6, "Entry,edn", self.entry_param_edn])
-        list_store.append([7, "Entry,cp", self.entry_param_cp])
-        list_store.append([8, "Entry,T", self.entry_param_T])
-        list_store.append([9, "Entry,gamma", self.entry_param_gamma])
-        list_store.append([10, "Entry,step_func_gamma", self.entry_param_step_func_gamma])
-        list_store.append([11, "Entry,me", self.entry_param_mee])
-        list_store.append([12, "Entry,mehh", self.entry_param_mehh])
-        list_store.append([13, "Entry,melh", self.entry_param_melh])
+        list_store.append([0, "Entry,a0", self.entry_param_a0, "a0"])
+        list_store.append([1, "Entry,g0", self.entry_param_g0, "g0"])
+        list_store.append([2, "Entry,eg", self.entry_param_eg, "Eg [eV]"])
+        list_store.append([3, "Entry,ef", self.entry_param_ef, "Ef [eV]"])
+        list_store.append([4, "Entry,en", self.entry_param_en, "En [eV]"])
+        list_store.append([5, "Entry,emax", self.entry_param_emax, "Emax [eV]"])
+        list_store.append([6, "Entry,edn", self.entry_param_edn, "Estep [eV]"])
+        list_store.append([7, "Entry,cp", self.entry_param_cp, "CP"])
+        list_store.append([8, "Entry,T", self.entry_param_T, "T [K]"])
+        list_store.append([9, "Entry,gamma", self.entry_param_gamma, "Gamma Peak [eV]"])
+        list_store.append([10, "Entry,step_func_gamma", self.entry_param_step_func_gamma, "Gamma step [eV]"])
+        list_store.append([11, "Entry,me", self.entry_param_mee, "Me"])
+        list_store.append([12, "Entry,mehh", self.entry_param_mehh, "Mehh"])
+        list_store.append([13, "Entry,melh", self.entry_param_melh, "Melh"])
 
 
         # frame energy
@@ -480,6 +489,15 @@ class GUI:
         self.buttonExportToOrigin = Gtk.Button('Export data to txt')
         self.buttonExportToOrigin.connect("clicked", self.save_to_origin, None)
         self.buttonSaveImage = Gtk.Button('Save Graph')
+
+        self.buttonSaveParams = Gtk.Button()
+        self.buttonSaveParams.set_always_show_image(True)
+        self.image_save_stock = Gtk.Image()
+        self.image_save_stock.set_from_stock(Gtk.STOCK_SAVE_AS, Gtk.IconSize.BUTTON)
+        self.buttonSaveParams.set_image(self.image_save_stock)
+        self.buttonSaveParams.set_image_position(Gtk.PositionType.RIGHT)
+        self.buttonSaveParams.set_label("Save parameters       ")
+
         self.check_if_graph_your_data = Gtk.CheckButton("Draw own data on graph")
         self.entry_readOwnFileForGraph = Gtk.Entry()
 
@@ -519,15 +537,16 @@ class GUI:
         self.grid.attach(self.frame_simulation_params, 0, 0, 2, 7)
         self.grid.attach(self.frame_energy, 2, 0, 5, 7)
         self.grid.attach(self.frame_emass, 0, 7, 2, 4)
-        self.grid.attach(self.frame1, 7, 0, 4, 10)
+        self.grid.attach(self.frame1, 7, 0, 4, 7)
 
         # main functionality
-        self.grid.attach(self.button1, 8, 12, 3, 1)
+        self.grid.attach(self.button1, 8, 9, 3, 1)
         self.grid.attach_next_to(self.buttonExportToOrigin, self.button1, Gtk.PositionType.TOP, 1, 1)
         self.grid.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, Gtk.PositionType.RIGHT, 1, 1)
         self.grid.attach_next_to(self.spectrum_combobox, self.button1, Gtk.PositionType.LEFT, 1, 1)
         self.grid.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, Gtk.PositionType.TOP, 1, 1)
         self.grid.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, Gtk.PositionType.LEFT, 1, 1)
+        self.grid.attach(self.buttonSaveParams, 3, 8, 3, 1)
 
         self.window.set_border_width(30)
         self.window.show_all()
