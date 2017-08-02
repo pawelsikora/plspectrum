@@ -346,7 +346,7 @@ class GUI:
         spectrum_store = Gtk.ListStore(int, str)
         spectrum_store.append([1, "--- Choose spectrum ---"])
         spectrum_store.append([11, "Absorption"])
-        spectrum_store.append([12, "Spectrum"])
+        spectrum_store.append([12, "Emission"])
         spectrum_store.append([21, "CB DOS"])
         spectrum_store.append([22, "VB DOS"])
         spectrum_store.append([3, "JDOS"])
