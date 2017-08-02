@@ -112,7 +112,7 @@ class GUI:
         self.window.show_all()
 
     def write_params_to_file(self, filename):
-        filename.write("--- Parameters used for generated graph ---\n")
+        filename.write("\n--- Parameters used for generated graph ---\n")
         for row in list_store:
             entry = list_store.get_value(row.iter, 2)
 
