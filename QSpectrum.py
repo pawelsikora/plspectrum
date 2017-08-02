@@ -13,7 +13,7 @@ __version__ = "0.1"
 
 class Spectrum_generator:
 
-    def __init__(self, file_with_measured_data="None"):
+    def __init__(self, file_with_measured_data = None):
         self.DOS = 0
         self.DOS2 = 0
         self.JDOS = 0
@@ -149,8 +149,8 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_beta(self):
-        print("File with measured data name: " + self.f_measured_data)
-        if (self.f_measured_data != "None"):
+        print("File with measured data name: " + str(self.f_measured_data))
+        if (self.f_measured_data != None):
             self.x, self.y = np.loadtxt(self.f_measured_data, delimiter=' ', \
                                         usecols=(0,1), unpack=True)
             print(self.x)

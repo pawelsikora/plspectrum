@@ -15,6 +15,9 @@ class GUI:
         except AttributeError:
             print("File is NOT set")
             self.c = Spectrum_generator()
+        except TypeError:
+            print("There is no variable for the file yet")
+            self.c = Spectrum_generator()
         else:
             print("File is set")
             self.c = Spectrum_generator(self.read_own_graph_file_name)
@@ -253,7 +256,7 @@ class GUI:
 
             dialog_own_graph_file.destroy()
         else:
-            self.read_own_graph_file_name = "None"
+            self.read_own_graph_file_name = None
 
     def delete_event(self, widget, event, data=None):
         print("delete event occurred")
