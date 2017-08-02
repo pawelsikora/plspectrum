@@ -235,22 +235,25 @@ class GUI:
         dialog_graph.destroy()
 
     def on_read_data_for_graph_toogled(self, widget, data=None):
-        self.spectrum_choice = self.spectrum_combobox.get_active()
+        if (self.check_if_graph_your_data.get_active() == True):
+            self.spectrum_choice = self.spectrum_combobox.get_active()
 
-        dialog_own_graph_file = Gtk.FileChooserDialog("Please choose file to open", None,
-            Gtk.FileChooserAction.OPEN,
-            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-             Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+            dialog_own_graph_file = Gtk.FileChooserDialog("Please choose file to open", None,
+                Gtk.FileChooserAction.OPEN,
+                (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                 Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 
-        response = dialog_own_graph_file.run()
-        if response == Gtk.ResponseType.OK:
-            print("Open clicked")
-            print("File selected: " + dialog_own_graph_file.get_filename())
+            response = dialog_own_graph_file.run()
+            if response == Gtk.ResponseType.OK:
+                print("Open clicked")
+                print("File selected: " + dialog_own_graph_file.get_filename())
 
-        self.read_own_graph_file_name = dialog_own_graph_file.get_filename()
-        self.entry_readOwnFileForGraph.set_text(self.read_own_graph_file_name)
+            self.read_own_graph_file_name = dialog_own_graph_file.get_filename()
+            self.entry_readOwnFileForGraph.set_text(self.read_own_graph_file_name)
 
-        dialog_own_graph_file.destroy()
+            dialog_own_graph_file.destroy()
+        else:
+            self.read_own_graph_file_name = "None"
 
     def delete_event(self, widget, event, data=None):
         print("delete event occurred")
