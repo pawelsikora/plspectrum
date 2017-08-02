@@ -556,7 +556,7 @@ class GUI:
         self.grid.attach_next_to(self.spectrum_combobox, self.button1, Gtk.PositionType.LEFT, 1, 1)
         self.grid.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, Gtk.PositionType.TOP, 1, 1)
         self.grid.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, Gtk.PositionType.LEFT, 1, 1)
-        self.grid.attach(self.buttonSaveParams, 3, 8, 3, 1)
+#        self.grid.attach(self.buttonSaveParams, 3, 8, 3, 1)
 
         self.window.set_border_width(30)
         self.window.show_all()
