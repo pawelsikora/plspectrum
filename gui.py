@@ -35,7 +35,7 @@ class GUI:
 
             es = list_store.get_value(row.iter, 1)
 
-            if es != "Entry,en" or es != "Entry,cp":
+            if es != "Entry,en" and es != "Entry,cp":
                 try:
                     tmp = float(gt)
                 except ValueError:
