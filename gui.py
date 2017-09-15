@@ -35,7 +35,8 @@ class GUI:
 
             es = list_store.get_value(row.iter, 1)
 
-            if es != "Entry,en" and es != "Entry,cp":
+            if es != "Entry,en" and es != "Entry,cp" and es != "Entry,hh" and es != "Entry,lh" \
+               and es != "Entry,wsk":
                 try:
                     tmp = float(gt)
                 except ValueError:
@@ -64,6 +65,11 @@ class GUI:
 
         self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
         self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
+        self.c.params.HH = np.fromstring(self.entry_param_hh.get_text(), dtype=float, sep=',')
+        self.c.params.LH = np.fromstring(self.entry_param_lh.get_text(), dtype=float, sep=',')
+        self.c.params.wsk = np.array(list(self.entry_param_wsk.get_text().split(',')))
+
+	print("Params wsk = " + str(self.c.params.wsk))
         self.c.params.A0 = float(self.entry_param_a0.get_text())
         self.c.params.g0 = float(self.entry_param_g0.get_text())
         self.c.params.Eg = float(self.entry_param_eg.get_text())
@@ -385,6 +391,9 @@ class GUI:
         self.label_param_emax = Gtk.Label("Emax [eV]")
         self.label_param_edn = Gtk.Label("Estep [eV]")
         self.label_param_cp = Gtk.Label("CP")
+        self.label_param_hh = Gtk.Label("HH")
+        self.label_param_lh = Gtk.Label("LH")
+        self.label_param_wsk = Gtk.Label("wsk")
         self.label_param_T = Gtk.Label("T [K]")
         self.label_param_gamma = Gtk.Label("  Gamma peak [eV]")
         self.label_param_step_func_gamma = Gtk.Label("Gamma Step [eV]")
@@ -406,6 +415,9 @@ class GUI:
         self.label_param_emax.set_xalign(1)
         self.label_param_edn.set_xalign(1)
         self.label_param_cp.set_xalign(1)
+        self.label_param_hh.set_xalign(1)
+        self.label_param_lh.set_xalign(1)
+        self.label_param_wsk.set_xalign(1)
         self.label_param_T.set_xalign(1)
         self.label_param_gamma.set_xalign(1)
         self.label_param_step_func_gamma.set_xalign(1)
@@ -427,6 +439,9 @@ class GUI:
         self.entry_param_emax = Gtk.Entry()
         self.entry_param_edn = Gtk.Entry()
         self.entry_param_cp = Gtk.Entry()
+        self.entry_param_hh = Gtk.Entry()
+        self.entry_param_lh = Gtk.Entry()
+        self.entry_param_wsk = Gtk.Entry()
         self.entry_param_T = Gtk.Entry()
         self.entry_param_gamma = Gtk.Entry()
         self.entry_param_step_func_gamma = Gtk.Entry()
@@ -442,13 +457,15 @@ class GUI:
         list_store.append([5, "Entry,emax", self.entry_param_emax, "Emax [eV]"])
         list_store.append([6, "Entry,edn", self.entry_param_edn, "Estep [eV]"])
         list_store.append([7, "Entry,cp", self.entry_param_cp, "CP"])
-        list_store.append([8, "Entry,T", self.entry_param_T, "T [K]"])
-        list_store.append([9, "Entry,gamma", self.entry_param_gamma, "Gamma Peak [eV]"])
-        list_store.append([10, "Entry,step_func_gamma", self.entry_param_step_func_gamma, "Gamma step [eV]"])
-        list_store.append([11, "Entry,me", self.entry_param_mee, "Me"])
-        list_store.append([12, "Entry,mehh", self.entry_param_mehh, "Mehh"])
-        list_store.append([13, "Entry,melh", self.entry_param_melh, "Melh"])
-
+        list_store.append([8, "Entry,hh", self.entry_param_cp, "HH"])
+        list_store.append([9, "Entry,lh", self.entry_param_cp, "LH"])
+        list_store.append([10, "Entry,wsk", self.entry_param_cp, "WSK"])
+        list_store.append([11, "Entry,T", self.entry_param_T, "T [K]"])
+        list_store.append([12, "Entry,gamma", self.entry_param_gamma, "Gamma Peak [eV]"])
+        list_store.append([13, "Entry,step_func_gamma", self.entry_param_step_func_gamma, "Gamma step [eV]"])
+        list_store.append([14, "Entry,me", self.entry_param_mee, "Me"])
+        list_store.append([15, "Entry,mehh", self.entry_param_mehh, "Mehh"])
+        list_store.append([16, "Entry,melh", self.entry_param_melh, "Melh"])
 
         # frame energy
         self.frame_energy = Gtk.Frame(label="Parameters of the electronic structure")
@@ -470,10 +487,16 @@ class GUI:
         self.grid_energy.attach(self.label_param_eg, 0, 5, 1, 1)
         self.grid_energy.attach(self.label_param_ef, 0, 6, 1, 1)
         self.grid_energy.attach(self.label_param_cp, 0, 7, 1, 1)
+        self.grid_energy.attach(self.label_param_hh, 0, 8, 1, 1)
+        self.grid_energy.attach(self.label_param_lh, 0, 9, 1, 1)
+        self.grid_energy.attach(self.label_param_wsk, 0, 10, 1, 1)
         self.grid_energy.attach(self.entry_param_en, 1, 1, 3, 1)
         self.grid_energy.attach(self.entry_param_eg, 1, 5, 1, 1)
         self.grid_energy.attach(self.entry_param_ef, 1, 6, 1, 1)
         self.grid_energy.attach(self.entry_param_cp, 1, 7, 3, 1)
+        self.grid_energy.attach(self.entry_param_hh, 1, 8, 3, 1)
+        self.grid_energy.attach(self.entry_param_lh, 1, 9, 3, 1)
+        self.grid_energy.attach(self.entry_param_wsk, 1, 10, 3, 1)
         self.grid_energy.attach(self.label_integrals, 4, 6, 1, 1)
         self.grid_energy.attach(self.label_number_of_integrals, 4, 7, 1, 1)
 
@@ -545,7 +568,7 @@ class GUI:
 
         # frames
         self.grid.attach(self.frame_simulation_params, 0, 0, 2, 7)
-        self.grid.attach(self.frame_energy, 2, 0, 5, 7)
+        self.grid.attach(self.frame_energy, 2, 0, 5, 10)
         self.grid.attach(self.frame_emass, 0, 7, 2, 4)
         self.grid.attach(self.frame1, 7, 0, 4, 7)
 

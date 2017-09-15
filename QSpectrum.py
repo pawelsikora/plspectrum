@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: iso-8859-15 -*-
 
 from common import *
 from gui import *
@@ -20,18 +21,47 @@ class Spectrum_generator:
         self.JDOS2 = 0
         self.dosC = 0
         self.dosV = 0
+        self.dosLH = 0
+        self.dosHH = 0
+        self.dosHH_probability = 0
         self.Hevisajd = 0
         self.Pik = 0
         self.Normal = 0
         self.Pik_mieszany = 0
         self.Delty = 0
+        self.OGS = 0
+        self.u_rehh = 0
+        self.u_relh = 0
 
         self.params = Parameters()
         self.params.update()
         self.f_measured_data = file_with_measured_data
 
     def delta_cal(self):
+        self.u_rehh = (self.params.me * self.params.mehh) \
+                    / (self.params.me + self.params.mehh)
+        self.u_relh = (self.params.me * self.params.melh) \
+                    / (self.params.me + self.params.melh)
+
+        for i in range(0, len(self.params.HH)):
+            self.dosHH = self.dosHH - self.params.g0 \
+                 * self.params.mehh \
+                 * ( Schodek(self.params.Ev - self.params.HH[i]))
+
+            self.dosHH_probability = self.dosHH_probability \
+                 - self.params.g0 * self.params.mehh \
+                 * (Schodek(self.params.Ev - self.params.HH[i]))
+
+        for i in range(0, len(self.params.LH)):
+            self.dosLH = self.dosLH - self.params.g0 * self.params.melh \
+                 * (Schodek(self.params.Ev - self.params.LH[i]))
+
         for i in range(0, len(self.params.En)):
+            if self.params.wsk[i]=='h':
+                self.params.masy_r[i]=self.u_rehh
+            elif self.params.wsk[i]=='l':
+                self.params.masy_r[i]=self.u_relh
+
             self.DOS = self.DOS + self.params.g0 * self.params.CP[i] * \
                 (DOS_rozmyty_erf(self.params.E, \
                  self.params.En[i], self.params.step_func_gamma) )
@@ -65,8 +95,7 @@ class Spectrum_generator:
             self.dosC = self.dosC + self.params.g0 * self.params.me * \
                 (Schodek(self.params.Ec - self.params.CB[i]))
 
-            self.dosV = self.dosV + self.params.g0 * self.params.mehh * \
-                (Schodek(self.params.Ev - self.params.VB[i]))
+            self.dosV = self.dosHH + self.dosLH
 
             self.JDOS = self.JDOS + self.params.g0 * \
                 (DOS_rozmyty_erf(self.params.E, self.params.En[i], \

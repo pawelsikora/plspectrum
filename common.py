@@ -21,6 +21,9 @@ class Parameters:
 		self.CP = np.array([1.0])
 		self.CB = np.array([0.49475,0.54384,0.60827])
 		self.VB = np.array([-0.69223,-0.7062,-0.7275])
+                self.HH = np.array([-0.69223,-0.7062,-0.7275])
+                self.LH = np.array([-0.71])
+		self.wsk = np.array(['h', 'h', 'h'])
 		self.me = 0.063
 		self.mehh = 0.51
 		self.melh = 0.082
@@ -35,6 +38,7 @@ class Parameters:
 		self.Hevisajd=np.zeros(len(self.E))
 		self.Delty=np.zeros(len(self.E))
 		self.Epocz=np.zeros(len(self.E))
+                self.masy_r = np.zeros(len(self.E))
 		self.LAMBDA = (1.24 / self.E)
 
 	def get_A0(self):
