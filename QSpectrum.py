@@ -224,7 +224,24 @@ class Spectrum_generator:
         plt.savefig("plot_cbdos_tmp.png", dpi=200)
         plt.close()
 
+    def plot_widmo_hh_lh_dos(self):
+        plt.ylabel('HH and LH DOS [j. w.]')
+        plt.xlabel('Energy [eV]')
+        data_plt_vb = plt.plot(self.params.Ev, self.dosHH        \
+                    + abs(min(self.dosHH)), 'r', self.params.Ev, \
+		    self.dosLH + abs(min(self.dosLH)), 'g', lw=2)
+
+        self.linex = data_plt_vb[0].get_data()
+
+        plt.savefig("plot_hh_lh_dos_tmp.png", dpi=80)
+        self.pb = Pixbuf.new_from_file("plot_hh_lh_dos_tmp.png")
+        self.generated_hh_lh_dos = Image.new_from_file("plot_hh_lh_dos_tmp.png")
+        plt.savefig("plot_hh_lh_dos_tmp.png", dpi=200)
+        plt.close()
+
     def plot_widmo_vbdos(self):
+        plt.ylabel('VB DOS [j. w.]')
+        plt.xlabel('Energy [eV]')
         data_plt_vb = plt.plot(self.params.Ev, self.dosV[::-1], 'g', lw=2)
 
         self.linex = data_plt_vb[0].get_data()
