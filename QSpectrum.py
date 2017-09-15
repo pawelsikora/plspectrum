@@ -134,6 +134,8 @@ class Spectrum_generator:
         self.widmo()
 
     def plot_widmo_alfa(self):
+        plt.ylabel('A [j. w.]')
+        plt.xlabel('Energy [um]')
         one = plt.plot(self.params.E, self.DOS/max(self.DOS), 'r', label="one")
         two = plt.plot(self.params.E, self.DOS2/max(self.DOS2), 'b', label="two")
         three = plt.plot(self.params.E, self.Hevisajd/max(self.Hevisajd), 'g', lw=2, label="three")
@@ -157,6 +159,9 @@ class Spectrum_generator:
             print(self.y)
             print(self.Widmo2)
             print("X and Y updated!")
+
+            plt.ylabel('Intensity [j. w.]')
+            plt.xlabel('λ [um]')
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo1/max(self.Widmo1), 'r', \
                  self.params.LAMBDA, self.Widmo2/max(self.Widmo2), \
                  'b', self.x, self.y, 'k.', lw=2)
@@ -178,6 +183,8 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_cbdos(self):
+        plt.ylabel('CB DOS [j. w.]')
+        plt.xlabel('Energy [eV]')
         data_plt_cb = plt.plot(self.params.Ec, self.dosC, 'k', lw=2)
 
         self.linex = data_plt_cb[0].get_data()
@@ -200,6 +207,8 @@ class Spectrum_generator:
         plt.close()
 
     def plot_widmo_jdos(self):
+        plt.ylabel('JDOS [j. w.]')
+        plt.xlabel('Energy [eV]')
         data_plt_j = plt.plot(self.params.E, self.JDOS/max(self.JDOS), 'r', \
                        self.params.E, self.JDOS2/max(self.JDOS2), 'b', \
                        self.params.E, self.Hevisajd/max(self.Hevisajd), 'k', lw=2)
