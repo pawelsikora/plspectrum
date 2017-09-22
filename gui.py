@@ -255,6 +255,12 @@ class GUI:
             dialog_graph.set_current_name('absorption_spectrum_graph_Untitled.png')
         elif self.spectrum_choice == 2:
             dialog_graph.set_current_name('pl_um_spectrum_graph_Untitled.png')
+        elif self.spectrum_choice == 3:
+            dialog_graph.set_current_name('cbdos_spectrum_graph_Untitled.png')
+        elif self.spectrum_choice == 4:
+            dialog_graph.set_current_name('vbdos_spectrum_graph_Untitled.png')
+        elif self.spectrum_choice == 5:
+            dialog_graph.set_current_name('hh_lh_dos_spectrum_graph_Untitled.png')
 
         response = dialog_graph.run()
         if response == Gtk.ResponseType.OK:
