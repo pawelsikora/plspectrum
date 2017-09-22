@@ -65,6 +65,7 @@ class GUI:
 
         self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
         self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
+        self.c.params.CB = np.fromstring(self.entry_param_cb.get_text(), dtype=float, sep=',')
         self.c.params.HH = np.fromstring(self.entry_param_hh.get_text(), dtype=float, sep=',')
         self.c.params.LH = np.fromstring(self.entry_param_lh.get_text(), dtype=float, sep=',')
         self.c.params.wsk = np.array(list(self.entry_param_wsk.get_text().split(',')))
@@ -332,13 +333,45 @@ class GUI:
         else:
             self.label_number_of_energy_levels.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
 
-    def changed_integral_param(self, widget, data=None):
+    def changed_cp_param(self, widget, data=None):
         txt_in_entry = self.entry_param_cp.get_text()
 
         if txt_in_entry == "":
-            self.label_number_of_integrals.set_markup("<b>0</b>")
+            self.label_number_of_cp.set_markup("<b>0</b>")
         else:
-            self.label_number_of_integrals.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+            self.label_number_of_cp.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+
+    def changed_cb_param(self, widget, data=None):
+        txt_in_entry = self.entry_param_cb.get_text()
+
+        if txt_in_entry == "":
+            self.label_number_of_cb.set_markup("<b>0</b>")
+        else:
+            self.label_number_of_cb.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+
+    def changed_hh_param(self, widget, data=None):
+        txt_in_entry = self.entry_param_hh.get_text()
+
+        if txt_in_entry == "":
+            self.label_number_of_hh.set_markup("<b>0</b>")
+        else:
+            self.label_number_of_hh.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+
+    def changed_lh_param(self, widget, data=None):
+        txt_in_entry = self.entry_param_lh.get_text()
+
+        if txt_in_entry == "":
+            self.label_number_of_lh.set_markup("<b>0</b>")
+        else:
+            self.label_number_of_lh.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
+
+    def changed_wsk_param(self, widget, data=None):
+        txt_in_entry = self.entry_param_wsk.get_text()
+
+        if txt_in_entry == "":
+            self.label_number_of_wsk.set_markup("<b>0</b>")
+        else:
+            self.label_number_of_wsk.set_markup("<b>"+str(txt_in_entry.count(',') + 1)+"</b>")
 
     def on_spectrum_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
@@ -457,6 +490,7 @@ class GUI:
         self.label_param_emax = Gtk.Label("Emax [eV]")
         self.label_param_edn = Gtk.Label("Estep [eV]")
         self.label_param_cp = Gtk.Label("CP")
+        self.label_param_cb = Gtk.Label("CB")
         self.label_param_hh = Gtk.Label("HH")
         self.label_param_lh = Gtk.Label("LH")
         self.label_param_wsk = Gtk.Label("wsk")
@@ -469,8 +503,12 @@ class GUI:
         self.label_emass_pick = Gtk.Label("Pick values for specific sc compound: ")
         self.label_energy_levels = Gtk.Label("Nb of energy states ")
         self.label_number_of_energy_levels = Gtk.Label("0")
-        self.label_integrals = Gtk.Label("Nb of integrals ")
-        self.label_number_of_integrals = Gtk.Label("0")
+        self.label_integrals = Gtk.Label("Nb")
+        self.label_number_of_cp = Gtk.Label("0")
+        self.label_number_of_cb = Gtk.Label("0")
+        self.label_number_of_hh = Gtk.Label("0")
+        self.label_number_of_lh = Gtk.Label("0")
+        self.label_number_of_wsk = Gtk.Label("0")
 
         self.label_param_a0.set_xalign(1)
         self.label_param_g0.set_xalign(1)
@@ -481,6 +519,7 @@ class GUI:
         self.label_param_emax.set_xalign(1)
         self.label_param_edn.set_xalign(1)
         self.label_param_cp.set_xalign(1)
+        self.label_param_cb.set_xalign(1)
         self.label_param_hh.set_xalign(1)
         self.label_param_lh.set_xalign(1)
         self.label_param_wsk.set_xalign(1)
@@ -489,7 +528,11 @@ class GUI:
         self.label_param_step_func_gamma.set_xalign(1)
         self.label_energy_levels.set_xalign(1)
         self.label_number_of_energy_levels.set_xalign(0.5)
-        self.label_number_of_integrals.set_xalign(0.5)
+        self.label_number_of_cp.set_xalign(0.5)
+        self.label_number_of_cb.set_xalign(0.5)
+        self.label_number_of_hh.set_xalign(0.5)
+        self.label_number_of_lh.set_xalign(0.5)
+        self.label_number_of_wsk.set_xalign(0.5)
         self.label_integrals.set_xalign(0.5)
         self.label_param_mee.set_xalign(1)
         self.label_param_mehh.set_xalign(1)
@@ -505,6 +548,7 @@ class GUI:
         self.entry_param_emax = Gtk.Entry()
         self.entry_param_edn = Gtk.Entry()
         self.entry_param_cp = Gtk.Entry()
+        self.entry_param_cb = Gtk.Entry()
         self.entry_param_hh = Gtk.Entry()
         self.entry_param_lh = Gtk.Entry()
         self.entry_param_wsk = Gtk.Entry()
@@ -523,15 +567,16 @@ class GUI:
         list_store.append([5, "Entry,emax", self.entry_param_emax, "Emax [eV]"])
         list_store.append([6, "Entry,edn", self.entry_param_edn, "Estep [eV]"])
         list_store.append([7, "Entry,cp", self.entry_param_cp, "CP"])
-        list_store.append([8, "Entry,hh", self.entry_param_cp, "HH"])
-        list_store.append([9, "Entry,lh", self.entry_param_cp, "LH"])
-        list_store.append([10, "Entry,wsk", self.entry_param_cp, "WSK"])
+        list_store.append([8, "Entry,hh", self.entry_param_hh, "HH"])
+        list_store.append([9, "Entry,lh", self.entry_param_lh, "LH"])
+        list_store.append([10, "Entry,wsk", self.entry_param_wsk, "WSK"])
         list_store.append([11, "Entry,T", self.entry_param_T, "T [K]"])
         list_store.append([12, "Entry,gamma", self.entry_param_gamma, "Gamma Peak [eV]"])
         list_store.append([13, "Entry,step_func_gamma", self.entry_param_step_func_gamma, "Gamma step [eV]"])
         list_store.append([14, "Entry,me", self.entry_param_mee, "Me"])
         list_store.append([15, "Entry,mehh", self.entry_param_mehh, "Mehh"])
         list_store.append([16, "Entry,melh", self.entry_param_melh, "Melh"])
+        list_store.append([17, "Entry,cb", self.entry_param_cb, "CB"])
 
         # frame energy
         self.frame_energy = Gtk.Frame(label="Parameters of the electronic structure")
@@ -544,27 +589,41 @@ class GUI:
         # entries for energy frame
         self.entry_param_eg.set_width_chars(5)
         self.entry_param_en.connect("changed", self.changed_energy_levels, None)
-        self.entry_param_cp.connect("changed", self.changed_integral_param, None)
+        self.entry_param_cp.connect("changed", self.changed_cp_param, None)
+        self.entry_param_cb.connect("changed", self.changed_cb_param, None)
+        self.entry_param_hh.connect("changed", self.changed_hh_param, None)
+        self.entry_param_lh.connect("changed", self.changed_lh_param, None)
+        self.entry_param_wsk.connect("changed", self.changed_wsk_param, None)
         self.label_number_of_energy_levels.set_markup("<b>0</b>")
-        self.label_number_of_integrals.set_markup("<b>0</b>")
+        self.label_number_of_cp.set_markup("<b>0</b>")
+        self.label_number_of_cb.set_markup("<b>0</b>")
+        self.label_number_of_hh.set_markup("<b>0</b>")
+        self.label_number_of_lh.set_markup("<b>0</b>")
+        self.label_number_of_wsk.set_markup("<b>0</b>")
         self.grid_energy.attach(self.label_energy_levels, 4, 0, 1, 1)
         self.grid_energy.attach(self.label_number_of_energy_levels, 4, 1, 1, 1)
         self.grid_energy.attach(self.label_param_en, 0, 1, 1, 1)
         self.grid_energy.attach(self.label_param_eg, 0, 5, 1, 1)
         self.grid_energy.attach(self.label_param_ef, 0, 6, 1, 1)
-        self.grid_energy.attach(self.label_param_cp, 0, 7, 1, 1)
-        self.grid_energy.attach(self.label_param_hh, 0, 8, 1, 1)
-        self.grid_energy.attach(self.label_param_lh, 0, 9, 1, 1)
-        self.grid_energy.attach(self.label_param_wsk, 0, 10, 1, 1)
+	self.grid_energy.attach(self.label_param_cp, 0, 7, 1, 1)
+        self.grid_energy.attach(self.label_param_cb, 0, 8, 1, 1)
+        self.grid_energy.attach(self.label_param_hh, 0, 9, 1, 1)
+        self.grid_energy.attach(self.label_param_lh, 0, 10, 1, 1)
+        self.grid_energy.attach(self.label_param_wsk, 0, 11, 1, 1)
         self.grid_energy.attach(self.entry_param_en, 1, 1, 3, 1)
         self.grid_energy.attach(self.entry_param_eg, 1, 5, 1, 1)
         self.grid_energy.attach(self.entry_param_ef, 1, 6, 1, 1)
         self.grid_energy.attach(self.entry_param_cp, 1, 7, 3, 1)
-        self.grid_energy.attach(self.entry_param_hh, 1, 8, 3, 1)
-        self.grid_energy.attach(self.entry_param_lh, 1, 9, 3, 1)
-        self.grid_energy.attach(self.entry_param_wsk, 1, 10, 3, 1)
+        self.grid_energy.attach(self.entry_param_cb, 1, 8, 3, 1)
+        self.grid_energy.attach(self.entry_param_hh, 1, 9, 3, 1)
+        self.grid_energy.attach(self.entry_param_lh, 1, 10, 3, 1)
+        self.grid_energy.attach(self.entry_param_wsk, 1, 11, 3, 1)
         self.grid_energy.attach(self.label_integrals, 4, 6, 1, 1)
-        self.grid_energy.attach(self.label_number_of_integrals, 4, 7, 1, 1)
+        self.grid_energy.attach(self.label_number_of_cp, 4, 7, 1, 1)
+        self.grid_energy.attach(self.label_number_of_cb, 4, 8, 1, 1)
+        self.grid_energy.attach(self.label_number_of_hh, 4, 9, 1, 1)
+        self.grid_energy.attach(self.label_number_of_lh, 4, 10, 1, 1)
+        self.grid_energy.attach(self.label_number_of_wsk, 4, 11, 1, 1)
 
         # frame electron mass
         self.frame_emass = Gtk.Frame(label="Effective masses")
