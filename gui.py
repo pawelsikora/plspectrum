@@ -92,11 +92,11 @@ class GUI:
         sc = self.spectrum_combobox.get_active()
 
         if sc == 1:
-           self.c.plot_widmo_alfa()
-           self.currentGraph = self.c.generated_alfa
+           self.c.plot_widmo_absorption()
+           self.currentGraph = self.c.generated_absorption
         elif sc == 2:
-           self.c.plot_widmo_beta()
-           self.currentGraph = self.c.generated_beta
+           self.c.plot_widmo_pl_um()
+           self.currentGraph = self.c.generated_pl_um
         elif sc == 3:
            self.c.plot_widmo_cbdos()
            self.currentGraph = self.c.generated_cbdos
@@ -136,7 +136,7 @@ class GUI:
            Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
 
         if self.spectrum_choice == 1:
-           dialog_origin.set_current_name('alfa_spectrum_origin_Untitled.txt')
+           dialog_origin.set_current_name('absorption_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
            if response == Gtk.ResponseType.OK:
                print("Save clicked")
@@ -154,7 +154,7 @@ class GUI:
            dialog_origin.destroy()
 
         elif self.spectrum_choice == 2:
-           dialog_origin.set_current_name('beta_spectrum_origin_Untitled.txt')
+           dialog_origin.set_current_name('pl_um_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
            if response == Gtk.ResponseType.OK:
                print("Save clicked")
@@ -252,9 +252,9 @@ class GUI:
              Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
 
         if self.spectrum_choice == 1:
-            dialog_graph.set_current_name('alfa_spectrum_graph_Untitled.png')
+            dialog_graph.set_current_name('absorption_spectrum_graph_Untitled.png')
         elif self.spectrum_choice == 2:
-            dialog_graph.set_current_name('beta_spectrum_graph_Untitled.png')
+            dialog_graph.set_current_name('pl_um_spectrum_graph_Untitled.png')
 
         response = dialog_graph.run()
         if response == Gtk.ResponseType.OK:

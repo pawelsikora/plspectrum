@@ -174,7 +174,7 @@ class Spectrum_generator:
         self.prawdopodobienstwo()
         self.widmo()
 
-    def plot_widmo_alfa(self):
+    def plot_widmo_absorption(self):
         plt.ylabel('A [j. w.]')
         plt.xlabel('Energy [eV]')
         one = plt.plot(self.params.E, self.Abs1/max(self.Abs1), 'r', lw=2, label="one")
@@ -185,13 +185,13 @@ class Spectrum_generator:
         self.liney = two[0].get_data()
         self.linez = three[0].get_data()
 
-        plt.savefig("plot_alfa_tmp.png", dpi=80)
-        self.pb = Pixbuf.new_from_file("plot_alfa_tmp.png")
-        self.generated_alfa = Image.new_from_file("plot_alfa_tmp.png")
-        plt.savefig("plot_alfa_tmp.png", dpi=200)
+        plt.savefig("plot_absorption_tmp.png", dpi=80)
+        self.pb = Pixbuf.new_from_file("plot_absorption_tmp.png")
+        self.generated_absorption = Image.new_from_file("plot_absorption_tmp.png")
+        plt.savefig("plot_absorption_tmp.png", dpi=200)
         plt.close()
 
-    def plot_widmo_beta(self):
+    def plot_widmo_pl_um(self):
         print("File with measured data name: " + str(self.f_measured_data))
         if (self.f_measured_data != None):
             self.x, self.y = np.loadtxt(self.f_measured_data, delimiter=' ', \
@@ -201,8 +201,6 @@ class Spectrum_generator:
             print(self.Widmo2)
             print("X and Y updated!")
 
-            plt.ylabel('PL [j. w.]')
-            plt.xlabel('lambda [um]')
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo1/max(self.Widmo1), 'r', \
                  self.params.LAMBDA, self.Widmo2/max(self.Widmo2), \
                  'b', self.x, self.y, 'k.', lw=2)
@@ -211,18 +209,18 @@ class Spectrum_generator:
             self.linez = data_plt[2].get_data()
         else:
             print("X/Y NOT updated!")
-            plt.ylabel('PL [j. w.]')
-            plt.xlabel('lambda [um]')
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo1/max(self.Widmo1), 'r', \
                  self.params.LAMBDA, self.Widmo2/max(self.Widmo2), \
                  'b', lw=2)
             self.linex = data_plt[0].get_data()
             self.liney = data_plt[1].get_data()
 
-        plt.savefig("plot_beta_tmp.png", dpi=80)
-        self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
-        self.generated_beta = Image.new_from_file("plot_beta_tmp.png")
-        plt.savefig("plot_beta_tmp.png", dpi=200)
+        plt.ylabel('PL [j. w.]')
+        plt.xlabel('lambda [um]')
+        plt.savefig("plot_pl_um_tmp.png", dpi=80)
+        self.pb = Pixbuf.new_from_file("plot_pl_um_tmp.png")
+        self.generated_pl_um = Image.new_from_file("plot_pl_um_tmp.png")
+        plt.savefig("plot_pl_um_tmp.png", dpi=200)
         plt.close()
 
     def plot_widmo_cbdos(self):
