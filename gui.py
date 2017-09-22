@@ -432,11 +432,25 @@ class GUI:
         self.window.set_icon_from_file('icon.png')
         self.grid_page_main = Gtk.Grid()
 
-        self.box_page_help = Gtk.Grid()
-        self.box_page_help.add(Gtk.Label('\'Help\' section, TBD'))
-
         self.box_page_about = Gtk.Grid()
-        self.box_page_about.add(Gtk.Label('\'About\' section, TBD'))
+
+	self.label_about = Gtk.Label('About')
+        self.label_about.set_markup("<span font='28'>About</span>")
+	self.label_about.set_margin_left(200)
+	self.label_about_text = Gtk.Label(justify = Gtk.Justification.CENTER)
+	self.label_about_text.set_margin_left(200)
+        self.label_about_text.set_markup("<span font='12'>\n<b>'PLspectrum'</b> is a python script for calculating   \
+and generating graphs of a photoluminescence    \
+spectrum. \n Script is able to generate the ideal  \
+characteristics and compare them with measured  \
+data when provided and draw it on single graph.\n\n \
+All with pyGTK and using GTK3+.</span>")
+
+        self.box_page_about.add(self.label_about)
+        self.box_page_about.attach_next_to(self.label_about_text, self.label_about, Gtk.PositionType.BOTTOM, 1, 1)
+
+        self.box_page_help = Gtk.Grid()
+        self.box_page_help.add(Gtk.Label('Help, TBD'))
 
         self.notebook = Gtk.Notebook()
 
