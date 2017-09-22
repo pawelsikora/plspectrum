@@ -19,8 +19,11 @@ class Spectrum_generator:
         self.DOS2 = 0
         self.JDOS = 0
         self.JDOS2 = 0
-        self.dosC = 0
-        self.dosV = 0
+        self.Abs1 = 0
+        self.Abs2 = 0
+        self.Abs3 = 0
+        self.dosCB = 0
+        self.dosVB = 0
         self.dosLH = 0
         self.dosHH = 0
         self.dosHH_probability = 0
@@ -43,10 +46,17 @@ class Spectrum_generator:
         self.u_relh = (self.params.me * self.params.melh) \
                     / (self.params.me + self.params.melh)
 
+        self.masy_r = np.zeros(len(self.params.En))
+
+        for i in range(0, len(self.params.CB)):
+			self.dosCB = self.dosCB + self.params.g0 \
+				* self.params.me \
+				* (Schodek(self.params.Ec - self.params.CB[i]))
+
         for i in range(0, len(self.params.HH)):
             self.dosHH = self.dosHH - self.params.g0 \
                  * self.params.mehh \
-                 * ( Schodek(self.params.Ev - self.params.HH[i]))
+                 * (Schodek(self.params.Ev - self.params.HH[i]))
 
             self.dosHH_probability = self.dosHH_probability \
                  - self.params.g0 * self.params.mehh \
@@ -57,11 +67,12 @@ class Spectrum_generator:
                  * (Schodek(self.params.Ev - self.params.LH[i]))
 
         for i in range(0, len(self.params.En)):
-            if self.params.wsk[i]=='h':
-                self.params.masy_r[i]=self.u_rehh
-            elif self.params.wsk[i]=='l':
-                self.params.masy_r[i]=self.u_relh
+            if (self.params.wsk[i]=='h' or self.params.wsk[i]=='H'):
+                self.masy_r[i]=self.u_rehh
+            elif (self.params.wsk[i]=='l' or self.params.wsk[i]=='L'):
+                self.masy_r[i]=self.u_relh
 
+        for i in range(0, len(self.params.En)):
             self.DOS = self.DOS + self.params.g0 * self.params.CP[i] * \
                 (DOS_rozmyty_erf(self.params.E, \
                  self.params.En[i], self.params.step_func_gamma) )
@@ -71,8 +82,8 @@ class Spectrum_generator:
                  self.params.En[i], self.params.step_func_gamma) )
 
             self.Hevisajd = self.Hevisajd + self.params.g0 * \
-                self.params.CP[i] * \
-                Schodek(self.params.E - self.params.En[i])
+                self.masy_r[i] * \
+                Schodek(self.params.E - self.params.En[i]) # Hevisajd to jest idealny JDOS!
 
             self.Pik = self.Pik + self.params.A0 * \
                 ( pik_Lorentza(self.params.E, \
@@ -92,25 +103,26 @@ class Spectrum_generator:
                 self.params.A0 * \
                 Delta(self.params.E - self.params.En[i])
 
-            self.dosC = self.dosC + self.params.g0 * self.params.me * \
-                (Schodek(self.params.Ec - self.params.CB[i]))
+            self.dosVB = self.dosHH + self.dosLH
 
-            self.dosV = self.dosHH + self.dosLH
-
-            self.JDOS = self.JDOS + self.params.g0 * \
+            self.JDOS = self.JDOS + self.params.g0 * self.masy_r[i] * \
                 (DOS_rozmyty_erf(self.params.E, self.params.En[i], \
                                  self.params.step_func_gamma))
 
-            self.JDOS2 = self.JDOS2 + self.params.g0 * \
+            self.JDOS2 = self.JDOS2 + self.params.g0 * self.masy_r[i] * \
                 (DOS_rozmyty_cauchy(self.params.E, self.params.En[i], \
                                     self.params.step_func_gamma))
 
-    def energia_pocz(self):
-        for i in range(0,len(self.params.E)):
-            if self.params.E[i] <= (self.params.Eg+self.params.En[0]):
-                self.params.Epocz[i]=0.0
-            else:
-                self.params.Epocz[i]=1.0
+            self.Abs1 = self.Abs1 + self.params.g0 * self.params.CP[i] * self.masy_r[i] * \
+                (DOS_rozmyty_erf(self.params.E, self.params.En[i], \
+                                 self.params.step_func_gamma))
+
+            self.Abs2 = self.Abs2 + self.params.g0 * self.params.CP[i] * self.masy_r[i] * \
+                (DOS_rozmyty_cauchy(self.params.E, self.params.En[i], \
+                                 self.params.step_func_gamma))
+
+            self.Abs3 = self.Abs3 + self.params.g0 * self.params.CP[i] * self.masy_r[i] * \
+                Schodek(self.params.E - self.params.En[i])
 
     def widmo_fd(self):
         self.Widmo_fd = self.Pik * self.DOS * \
@@ -121,14 +133,14 @@ class Spectrum_generator:
             distribution_Boltzmann(0.0, self.params.E, self.params.T)
 
     def widmo_planck(self):
-        self.Widmo1 = (1.0 / self.params.E) * self.DOS * \
+        self.Widmo1 = (1.0 / self.params.E) * self.Abs1 * \
         distribution_Planck(self.params.E, self.params.T) * self.params.E
 
     def prawdopodobienstwo(self):
         self.Prawd = np.zeros(len(self.params.E))
         for i in range(0, len(self.params.E)):
              self.Prawd[i] = Calka( self.params.E, pik_Gaussowski(self.params.E, \
-                             self.params.E[i], self.params.gamma) * self.DOS * \
+                             self.params.E[i], self.params.gamma) * self.Abs1 * \
                              distribution_Boltzmann(0.0, self.params.E, self.params.T) )
 
     def generate(self, items):
@@ -155,7 +167,7 @@ class Spectrum_generator:
 
     def calculate_all(self):
         self.delta_cal()
-        self.energia_pocz()
+        #self.energia_pocz()
         self.widmo_fd()
         self.widmo_boltzmann()
         self.widmo_planck()
@@ -164,10 +176,10 @@ class Spectrum_generator:
 
     def plot_widmo_alfa(self):
         plt.ylabel('A [j. w.]')
-        plt.xlabel('Energy [um]')
-        one = plt.plot(self.params.E, self.DOS/max(self.DOS), 'r', label="one")
-        two = plt.plot(self.params.E, self.DOS2/max(self.DOS2), 'b', label="two")
-        three = plt.plot(self.params.E, self.Hevisajd/max(self.Hevisajd), 'g', lw=2, label="three")
+        plt.xlabel('Energy [eV]')
+        one = plt.plot(self.params.E, self.Abs1/max(self.Abs1), 'r', lw=2, label="one")
+        two = plt.plot(self.params.E, self.Abs2/max(self.Abs2), 'b', lw=2, label="two")
+        three = plt.plot(self.params.E, self.Abs3/max(self.Abs3), 'k', lw=2, label="three")
 
         self.linex = one[0].get_data()
         self.liney = two[0].get_data()
@@ -189,8 +201,8 @@ class Spectrum_generator:
             print(self.Widmo2)
             print("X and Y updated!")
 
-            plt.ylabel('Intensity [j. w.]')
-            plt.xlabel('λ [um]')
+            plt.ylabel('PL [j. w.]')
+            plt.xlabel('lambda [um]')
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo1/max(self.Widmo1), 'r', \
                  self.params.LAMBDA, self.Widmo2/max(self.Widmo2), \
                  'b', self.x, self.y, 'k.', lw=2)
@@ -199,12 +211,14 @@ class Spectrum_generator:
             self.linez = data_plt[2].get_data()
         else:
             print("X/Y NOT updated!")
+            plt.ylabel('PL [j. w.]')
+            plt.xlabel('lambda [um]')
             data_plt = plt.plot(self.params.LAMBDA, self.Widmo1/max(self.Widmo1), 'r', \
                  self.params.LAMBDA, self.Widmo2/max(self.Widmo2), \
-                 'b', lw=2)    
+                 'b', lw=2)
             self.linex = data_plt[0].get_data()
             self.liney = data_plt[1].get_data()
-        
+
         plt.savefig("plot_beta_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_beta_tmp.png")
         self.generated_beta = Image.new_from_file("plot_beta_tmp.png")
@@ -214,7 +228,7 @@ class Spectrum_generator:
     def plot_widmo_cbdos(self):
         plt.ylabel('CB DOS [j. w.]')
         plt.xlabel('Energy [eV]')
-        data_plt_cb = plt.plot(self.params.Ec, self.dosC, 'k', lw=2)
+        data_plt_cb = plt.plot(self.params.Ec, self.dosCB, 'k', lw=2)
 
         self.linex = data_plt_cb[0].get_data()
 
@@ -229,7 +243,7 @@ class Spectrum_generator:
         plt.xlabel('Energy [eV]')
         data_plt_vb = plt.plot(self.params.Ev, self.dosHH        \
                     + abs(min(self.dosHH)), 'r', self.params.Ev, \
-		    self.dosLH + abs(min(self.dosLH)), 'g', lw=2)
+		    self.dosLH + abs(min(self.dosLH)), 'b', lw=2)
 
         self.linex = data_plt_vb[0].get_data()
 
@@ -242,7 +256,7 @@ class Spectrum_generator:
     def plot_widmo_vbdos(self):
         plt.ylabel('VB DOS [j. w.]')
         plt.xlabel('Energy [eV]')
-        data_plt_vb = plt.plot(self.params.Ev, self.dosV[::-1], 'g', lw=2)
+        data_plt_vb = plt.plot(self.params.Ev, self.dosVB + abs(min(self.dosVB)), 'k', lw=2)
 
         self.linex = data_plt_vb[0].get_data()
 
