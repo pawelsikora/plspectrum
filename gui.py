@@ -397,11 +397,23 @@ class GUI:
         self.window = Gtk.Window()
         self.window.set_size_request(1200, 450)
         self.window.set_icon_from_file('icon.png')
-        self.grid = Gtk.Grid()
+        self.grid_page_main = Gtk.Grid()
 
-        self.grid.set_column_spacing(10)
-        self.grid.set_row_spacing(10)
-        self.window.add(self.grid)
+        self.box_page_help = Gtk.Grid()
+        self.box_page_help.add(Gtk.Label('\'Help\' section, TBD'))
+
+        self.box_page_about = Gtk.Grid()
+        self.box_page_about.add(Gtk.Label('\'About\' section, TBD'))
+
+        self.notebook = Gtk.Notebook()
+
+        self.grid_page_main.set_column_spacing(10)
+        self.grid_page_main.set_row_spacing(20)
+
+        self.notebook.append_page(self.grid_page_main, Gtk.Label('Graph generator'))
+        self.notebook.append_page(self.box_page_help, Gtk.Label('Help'))
+        self.notebook.append_page(self.box_page_about, Gtk.Label('About'))
+        self.window.add(self.notebook)
 
         self.initGraph = Gtk.Image.new_from_file('init_frame_image.png')
         self.currentGraph = self.initGraph
@@ -621,19 +633,19 @@ class GUI:
         self.grid_simulation_params.attach_next_to(self.entry_param_edn,  self.entry_param_emax, Gtk.PositionType.BOTTOM, 1, 1)
 
         # frames
-        self.grid.attach(self.frame_simulation_params, 0, 0, 2, 7)
-        self.grid.attach(self.frame_energy, 2, 0, 5, 10)
-        self.grid.attach(self.frame_emass, 0, 7, 2, 4)
-        self.grid.attach(self.frame1, 7, 0, 4, 7)
+        self.grid_page_main.attach(self.frame_simulation_params, 0, 0, 2, 7)
+        self.grid_page_main.attach(self.frame_energy, 2, 0, 5, 10)
+        self.grid_page_main.attach(self.frame_emass, 0, 7, 2, 4)
+        self.grid_page_main.attach(self.frame1, 7, 0, 4, 7)
 
         # main functionality
-        self.grid.attach(self.button1, 8, 9, 3, 1)
-        self.grid.attach_next_to(self.buttonExportToOrigin, self.button1, Gtk.PositionType.TOP, 1, 1)
-        self.grid.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, Gtk.PositionType.RIGHT, 1, 1)
-        self.grid.attach_next_to(self.spectrum_combobox, self.button1, Gtk.PositionType.LEFT, 1, 1)
-        self.grid.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, Gtk.PositionType.TOP, 1, 1)
-        self.grid.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, Gtk.PositionType.LEFT, 1, 1)
-#        self.grid.attach(self.buttonSaveParams, 3, 8, 3, 1)
+        self.grid_page_main.attach(self.button1, 8, 9, 3, 1)
+        self.grid_page_main.attach_next_to(self.buttonExportToOrigin, self.button1, Gtk.PositionType.TOP, 1, 1)
+        self.grid_page_main.attach_next_to(self.buttonSaveImage, self.buttonExportToOrigin, Gtk.PositionType.RIGHT, 1, 1)
+        self.grid_page_main.attach_next_to(self.spectrum_combobox, self.button1, Gtk.PositionType.LEFT, 1, 1)
+        self.grid_page_main.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, Gtk.PositionType.TOP, 1, 1)
+        self.grid_page_main.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, Gtk.PositionType.LEFT, 1, 1)
+#        self.grid_page_main.attach(self.buttonSaveParams, 3, 8, 3, 1)
 
         self.window.set_border_width(30)
         self.window.show_all()
