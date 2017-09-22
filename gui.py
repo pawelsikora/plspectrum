@@ -98,15 +98,18 @@ class GUI:
            self.c.plot_widmo_pl_um()
            self.currentGraph = self.c.generated_pl_um
         elif sc == 3:
+           self.c.plot_widmo_pl_ev()
+           self.currentGraph = self.c.generated_pl_ev
+        elif sc == 4:
            self.c.plot_widmo_cbdos()
            self.currentGraph = self.c.generated_cbdos
-        elif sc == 4:
+        elif sc == 5:
            self.c.plot_widmo_vbdos()
            self.currentGraph = self.c.generated_vbdos
-        elif sc == 5:
+        elif sc == 6:
            self.c.plot_widmo_hh_lh_dos()
            self.currentGraph = self.c.generated_hh_lh_dos
-        elif sc == 6:
+        elif sc == 7:
            self.c.plot_widmo_jdos()
            self.currentGraph = self.c.generated_jdos
         else:
@@ -172,6 +175,24 @@ class GUI:
            dialog_origin.destroy()
 
         elif self.spectrum_choice == 3:
+           dialog_origin.set_current_name('pl_ev_spectrum_origin_Untitled.txt')
+           response = dialog_origin.run()
+           if response == Gtk.ResponseType.OK:
+               print("Save clicked")
+               print("File selected: " + dialog_origin.get_filename())
+
+               f = open(dialog_origin.get_filename(), 'wb')
+               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1]])
+               data = data.T
+               somestr = "X Y1 Y2\n"
+               f.write(somestr.encode('ascii'))
+               np.savetxt(f, data, fmt='%.7f %.7f %.7f')
+               self.write_params_to_file(f)
+               f.close()
+
+           dialog_origin.destroy()
+
+        elif self.spectrum_choice == 4:
            dialog_origin.set_current_name('cbdos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
            if response == Gtk.ResponseType.OK:
@@ -189,7 +210,7 @@ class GUI:
 
            dialog_origin.destroy()
 
-        elif self.spectrum_choice == 4:
+        elif self.spectrum_choice == 5:
            dialog_origin.set_current_name('vbdos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
            if response == Gtk.ResponseType.OK:
@@ -207,7 +228,7 @@ class GUI:
 
            dialog_origin.destroy()
 
-        elif self.spectrum_choice == 5:
+        elif self.spectrum_choice == 6:
            dialog_origin.set_current_name('hh_lh_dos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
            if response == Gtk.ResponseType.OK:
@@ -225,7 +246,7 @@ class GUI:
 
            dialog_origin.destroy()
 
-        elif self.spectrum_choice == 6:
+        elif self.spectrum_choice == 7:
            dialog_origin.set_current_name('jdos_spectrum_origin_Untitled.txt')
            response = dialog_origin.run()
            if response == Gtk.ResponseType.OK:
@@ -256,11 +277,15 @@ class GUI:
         elif self.spectrum_choice == 2:
             dialog_graph.set_current_name('pl_um_spectrum_graph_Untitled.png')
         elif self.spectrum_choice == 3:
-            dialog_graph.set_current_name('cbdos_spectrum_graph_Untitled.png')
+            dialog_graph.set_current_name('pl_ev_spectrum_graph_Untitled.png')
         elif self.spectrum_choice == 4:
-            dialog_graph.set_current_name('vbdos_spectrum_graph_Untitled.png')
+            dialog_graph.set_current_name('cbdos_spectrum_graph_Untitled.png')
         elif self.spectrum_choice == 5:
+            dialog_graph.set_current_name('vbdos_spectrum_graph_Untitled.png')
+        elif self.spectrum_choice == 6:
             dialog_graph.set_current_name('hh_lh_dos_spectrum_graph_Untitled.png')
+        elif self.spectrum_choice == 7:
+            dialog_graph.set_current_name('jdos_spectrum_graph_Untitled.png')
 
         response = dialog_graph.run()
         if response == Gtk.ResponseType.OK:
@@ -385,7 +410,8 @@ class GUI:
         spectrum_store = Gtk.ListStore(int, str)
         spectrum_store.append([1, "--- Choose spectrum ---"])
         spectrum_store.append([11, "Absorption"])
-        spectrum_store.append([12, "Emission"])
+        spectrum_store.append([12, "Emission [um]"])
+        spectrum_store.append([13, "Emission [eV]"])
         spectrum_store.append([21, "CB DOS"])
         spectrum_store.append([22, "VB DOS"])
         spectrum_store.append([23, "HH and LH DOS"])

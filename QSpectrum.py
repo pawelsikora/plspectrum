@@ -223,6 +223,38 @@ class Spectrum_generator:
         plt.savefig("plot_pl_um_tmp.png", dpi=200)
         plt.close()
 
+    def plot_widmo_pl_ev(self):
+        print("File with measured data name: " + str(self.f_measured_data))
+        if (self.f_measured_data != None):
+            self.x, self.y = np.loadtxt(self.f_measured_data, delimiter=' ', \
+                                        usecols=(0,1), unpack=True)
+            print(self.x)
+            print(self.y)
+            print(self.Widmo2)
+            print("X and Y updated!")
+
+            data_plt = plt.plot(self.params.Ev, self.Widmo1/max(self.Widmo1), 'r', \
+                 self.params.Ev, self.Widmo2/max(self.Widmo2), \
+                 'b', self.x, self.y, 'k.', lw=2)
+            self.linex = data_plt[0].get_data()
+            self.liney = data_plt[1].get_data()
+            self.linez = data_plt[2].get_data()
+        else:
+            print("X/Y NOT updated!")
+            data_plt = plt.plot(self.params.Ev, self.Widmo1/max(self.Widmo1), 'r', \
+                 self.params.Ev, self.Widmo2/max(self.Widmo2), \
+                 'b', lw=2)
+            self.linex = data_plt[0].get_data()
+            self.liney = data_plt[1].get_data()
+
+        plt.ylabel('PL [j. w.]')
+        plt.xlabel('lambda [eV]')
+        plt.savefig("plot_pl_ev_tmp.png", dpi=80)
+        self.pb = Pixbuf.new_from_file("plot_pl_ev_tmp.png")
+        self.generated_pl_um = Image.new_from_file("plot_pl_ev_tmp.png")
+        plt.savefig("plot_pl_ev_tmp.png", dpi=200)
+        plt.close()
+
     def plot_widmo_cbdos(self):
         plt.ylabel('CB DOS [j. w.]')
         plt.xlabel('Energy [eV]')
