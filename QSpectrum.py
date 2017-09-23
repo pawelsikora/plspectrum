@@ -233,8 +233,8 @@ class Spectrum_generator:
             print(self.Widmo2)
             print("X and Y updated!")
 
-            data_plt = plt.plot(self.params.Ev, self.Widmo1/max(self.Widmo1), 'r', \
-                 self.params.Ev, self.Widmo2/max(self.Widmo2), \
+            data_plt = plt.plot(self.params.E, self.Widmo1/max(self.Widmo1), 'r', \
+                 self.params.E, self.Widmo2/max(self.Widmo2), \
                  'b', self.x, self.y, 'k.', lw=2)
             self.linex = data_plt[0].get_data()
             self.liney = data_plt[1].get_data()
