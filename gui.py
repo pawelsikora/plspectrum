@@ -433,9 +433,10 @@ class GUI:
         self.grid_page_main = Gtk.Grid()
 
         self.box_page_about = Gtk.Grid()
+        self.box_page_about.set_row_spacing(20)
 
 	self.label_about = Gtk.Label('About')
-        self.label_about.set_markup("<span font='28'>About</span>")
+        self.label_about.set_markup("<span font='34'>About</span>")
 	self.label_about.set_margin_left(200)
 	self.label_about_text = Gtk.Label(justify = Gtk.Justification.CENTER)
 	self.label_about_text.set_margin_left(200)
@@ -446,8 +447,14 @@ characteristics and compare them with measured  \
 data when provided and draw it on single graph.\n\n \
 All with pyGTK and using GTK3+.</span>")
 
+	self.logo_about = Gtk.Image.new_from_file('logo_about.png')
+        self.frame_logo = Gtk.Frame()
+        self.frame_logo.set_margin_left(210)
+        self.frame_logo.set_shadow_type(Gtk.ShadowType.NONE)
+        self.frame_logo.add(self.logo_about)
         self.box_page_about.add(self.label_about)
-        self.box_page_about.attach_next_to(self.label_about_text, self.label_about, Gtk.PositionType.BOTTOM, 1, 1)
+        self.box_page_about.attach_next_to(self.frame_logo, self.label_about, Gtk.PositionType.BOTTOM, 1, 1)
+        self.box_page_about.attach_next_to(self.label_about_text, self.frame_logo, Gtk.PositionType.BOTTOM, 1, 1)
 
         self.box_page_help = Gtk.Grid()
         self.box_page_help.add(Gtk.Label('Help, TBD'))
