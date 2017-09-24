@@ -251,7 +251,7 @@ class Spectrum_generator:
         plt.xlabel('lambda [eV]')
         plt.savefig("plot_pl_ev_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_pl_ev_tmp.png")
-        self.generated_pl_um = Image.new_from_file("plot_pl_ev_tmp.png")
+        self.generated_pl_ev = Image.new_from_file("plot_pl_ev_tmp.png")
         plt.savefig("plot_pl_ev_tmp.png", dpi=200)
         plt.close()
 
