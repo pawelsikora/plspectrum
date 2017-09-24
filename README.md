@@ -1,8 +1,8 @@
 # PLspectrum
 
 ## Authors
-* Piotr Ruszała - initial work from the second commit
-* Paweł Sikora  - maintainer
+* Piotr Ruszała, '204185@student.pwr.edu.pl', (Physics)
+* Paweł Sikora, 'sikor6@gmail.com', (Interface, pyGtk)
 
 ## Description
 PLspectrum is a python script for calculating and generating graphs of a photoluminescence spectrum.
