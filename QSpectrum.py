@@ -248,7 +248,7 @@ class Spectrum_generator:
             self.liney = data_plt[1].get_data()
 
         plt.ylabel('PL [j. w.]')
-        plt.xlabel('lambda [eV]')
+        plt.xlabel('Energy [eV]')
         plt.savefig("plot_pl_ev_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_pl_ev_tmp.png")
         self.generated_pl_ev = Image.new_from_file("plot_pl_ev_tmp.png")
