@@ -38,7 +38,6 @@ class Parameters:
 		self.Hevisajd=np.zeros(len(self.E))
 		self.Delty=np.zeros(len(self.E))
 		self.Epocz=np.zeros(len(self.E))
-                self.masy_r = np.zeros(len(self.E))
 		self.LAMBDA = (1.24 / self.E)
 
 	def get_A0(self):
