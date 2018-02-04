@@ -28,6 +28,37 @@ class GUI:
         self.create_notebook_page_HELP()
         self.create_notebook_page_ABOUT()
 
+        self.entry_param_en.set_text("1")
+        self.entry_param_a0.set_text("4")
+        self.entry_param_g0.set_text("5")
+        self.entry_param_eg.set_text("4")
+        self.entry_param_ef.set_text("2")
+        self.entry_param_en.set_text("1,1,1,1")
+        self.entry_param_emin.set_text("1")
+        self.entry_param_emax.set_text("2")
+        self.entry_param_edn.set_text("0.1")
+        self.entry_param_ecmin.set_text("1")
+        self.entry_param_ecmax.set_text("2")
+        self.entry_param_ecdn.set_text("0.1")
+        self.entry_param_evmin.set_text("1")
+        self.entry_param_evmax.set_text("2")
+        self.entry_param_evdn.set_text("0.1")
+
+         # Parameters of the structure
+        self.entry_param_cp.set_text("1,1,1,1")
+        self.entry_param_cb.set_text("1,1,1,1")
+        self.entry_param_hh.set_text("1,1,1,1")
+        self.entry_param_lh.set_text("1,1,1,1")
+        self.entry_param_wsk.set_text("h,h,h,h")
+        self.entry_param_T.set_text("270")
+        self.entry_param_gamma.set_text("5")
+        self.entry_param_step_func_gamma.set_text("0.1")
+
+        # Effective masses section
+        self.entry_param_mee.set_text("4")
+        self.entry_param_mehh.set_text("4")
+        self.entry_param_melh.set_text("4")
+
         self.window.add(self.notebook)
         self.window.show_all()
 
@@ -39,13 +70,15 @@ class GUI:
             print("Try var with filename:" + self.read_own_graph_file_name)
         except AttributeError:
             print("File is NOT set")
-            self.c = Spectrum_generator()
+            self.generator = Spectrum_generator()
         except TypeError:
             print("There is no variable for the file yet")
-            self.c = Spectrum_generator()
+            self.generator = Spectrum_generator()
         else:
             print("File is set")
-            self.c = Spectrum_generator(self.read_own_graph_file_name)
+            self.generator = Spectrum_generator(self.read_own_graph_file_name)
+
+        self.calculator = self.generator.calculator
 
         self.empty_cnt = 0
         self.not_a_number_cnt = 0
@@ -88,62 +121,83 @@ class GUI:
 
             return -1
 
-        self.c.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
-        self.c.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
-        self.c.params.CB = np.fromstring(self.entry_param_cb.get_text(), dtype=float, sep=',')
-        self.c.params.HH = np.fromstring(self.entry_param_hh.get_text(), dtype=float, sep=',')
-        self.c.params.LH = np.fromstring(self.entry_param_lh.get_text(), dtype=float, sep=',')
-        self.c.params.wsk = np.array(list(self.entry_param_wsk.get_text().split(',')))
+        self.calculator.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
+        self.calculator.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
+        self.calculator.params.CB = np.fromstring(self.entry_param_cb.get_text(), dtype=float, sep=',')
+        self.calculator.params.HH = np.fromstring(self.entry_param_hh.get_text(), dtype=float, sep=',')
+        self.calculator.params.LH = np.fromstring(self.entry_param_lh.get_text(), dtype=float, sep=',')
+        self.calculator.params.wsk = np.array(list(self.entry_param_wsk.get_text().split(',')))
 
-	print("Params wsk = " + str(self.c.params.wsk))
-        self.c.params.A0 = float(self.entry_param_a0.get_text())
-        self.c.params.g0 = float(self.entry_param_g0.get_text())
-        self.c.params.Eg = float(self.entry_param_eg.get_text())
-        self.c.params.Ef = float(self.entry_param_ef.get_text())
-        self.c.params.E = np.arange(float(self.entry_param_emin.get_text()),
+	print("Params wsk = " + str(self.calculator.params.wsk))
+        self.calculator.params.A0 = float(self.entry_param_a0.get_text())
+        self.calculator.params.g0 = float(self.entry_param_g0.get_text())
+        self.calculator.params.Eg = float(self.entry_param_eg.get_text())
+        self.calculator.params.Ef = float(self.entry_param_ef.get_text())
+        self.calculator.params.E = np.arange(float(self.entry_param_emin.get_text()),
                                     float(self.entry_param_emax.get_text()),
                                     float(self.entry_param_edn.get_text()))
-        self.c.params.Ec = np.arange(float(self.entry_param_ecmin.get_text()),
+        self.calculator.params.Ec = np.arange(float(self.entry_param_ecmin.get_text()),
                                     float(self.entry_param_ecmax.get_text()),
                                     float(self.entry_param_ecdn.get_text()))
-        self.c.params.Ev = np.arange(float(self.entry_param_evmin.get_text()),
+        self.calculator.params.Ev = np.arange(float(self.entry_param_evmin.get_text()),
                                     float(self.entry_param_evmax.get_text()),
                                     float(self.entry_param_evdn.get_text()))
-        self.c.params.T = float(self.entry_param_T.get_text())
-        self.c.params.gamma = float(self.entry_param_gamma.get_text())
-        self.c.params.step_func_gamma = float(self.entry_param_step_func_gamma.get_text())
-        self.c.params.me = float(self.entry_param_mee.get_text())
-        self.c.params.mehh = float(self.entry_param_mehh.get_text())
-        self.c.params.melh = float(self.entry_param_melh.get_text())
+        self.calculator.params.T = float(self.entry_param_T.get_text())
+        self.calculator.params.gamma = float(self.entry_param_gamma.get_text())
+        self.calculator.params.step_func_gamma = float(self.entry_param_step_func_gamma.get_text())
+        self.calculator.params.me = float(self.entry_param_mee.get_text())
+        self.calculator.params.mehh = float(self.entry_param_mehh.get_text())
+        self.calculator.params.melh = float(self.entry_param_melh.get_text())
 
-        self.c.params.LAMBDA = (1.24 / self.c.params.E)
+        self.calculator.params.LAMBDA = (1.24 / self.calculator.params.E)
 
         self.frame1.remove(self.currentGraph)
-        self.c.calculate_all()
+        self.calculator.calculate_all()
 
         sc = self.spectrum_combobox.get_active()
 
         if sc == 1:
-           self.c.plot_widmo_absorption()
-           self.currentGraph = self.c.generated_absorption
+           self.generator.plot_widmo_absorption(self.calculator.params.E,
+                                                self.calculator.Abs1,
+                                                self.calculator.Abs2,
+                                                self.calculator.Abs3,
+                                                )
+           self.currentGraph = self.generator.generated_absorption
         elif sc == 2:
-           self.c.plot_widmo_pl_um()
-           self.currentGraph = self.c.generated_pl_um
+           self.generator.plot_widmo_pl_um(self.calculator.Widmo1,
+                                           self.calculator.Widmo2,
+                                           self.calculator.params.LAMBDA
+                                           )
+           self.currentGraph = self.generator.generated_pl_um
         elif sc == 3:
-           self.c.plot_widmo_pl_ev()
-           self.currentGraph = self.c.generated_pl_ev
+           self.generator.plot_widmo_pl_ev(self.calculator.Widmo1,
+                                   self.calculator.Widmo2,
+                                    self.calculator.params.LAMBDA,
+                                  )
+           self.currentGraph = self.generator.generated_pl_ev
         elif sc == 4:
-           self.c.plot_widmo_cbdos()
-           self.currentGraph = self.c.generated_cbdos
+           self.generator.plot_widmo_cbdos(self.calculator.params.Ec,
+                                            self.calculator.params.Ev,
+                                            self.calculator.dosCB
+                                            )
+           self.currentGraph = self.generator.generated_cbdos
         elif sc == 5:
-           self.c.plot_widmo_vbdos()
-           self.currentGraph = self.c.generated_vbdos
+           self.generator.plot_widmo_vbdos(self.calculator.params.Ev,
+                                           self.calculator.dosVB
+                                          )
+           self.currentGraph = self.generator.generated_vbdos
         elif sc == 6:
-           self.c.plot_widmo_hh_lh_dos()
-           self.currentGraph = self.c.generated_hh_lh_dos
+           self.generator.plot_widmo_hh_lh_dos(self.calculator.params.Ev,
+                                               self.calculator.dosHH,
+                                               self.calculator.dosLH,
+                                              )
+           self.currentGraph = self.generator.generated_hh_lh_dos
         elif sc == 7:
-           self.c.plot_widmo_jdos()
-           self.currentGraph = self.c.generated_jdos
+           self.generator.plot_widmo_jdos(self.calculator.JDOS,
+                                          self.calculator.JDOS2,
+                                          self.calculator.Hevisajd,
+                                         )
+           self.currentGraph = self.generator.generated_jdos
         else:
            dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
                Gtk.ButtonsType.OK, "Wrong choice!")
@@ -178,7 +232,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1], self.c.linez[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1], self.generator.liney[1], self.generator.linez[1]])
                data = data.T
                somestr = "X Y1 Y2 Y3\n"
                f.write(somestr.encode('ascii'))
@@ -196,7 +250,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1], self.generator.liney[1]])
                data = data.T
                somestr = "X Y1 Y2\n"
                f.write(somestr.encode('ascii'))
@@ -214,7 +268,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1], self.generator.liney[1]])
                data = data.T
                somestr = "X Y1 Y2\n"
                f.write(somestr.encode('ascii'))
@@ -232,7 +286,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1]])
                data = data.T
                somestr = "X Y1\n"
                f.write(somestr.encode('ascii'))
@@ -250,7 +304,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1]])
                data = data.T
                somestr = "X Y1\n"
                f.write(somestr.encode('ascii'))
@@ -268,7 +322,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1]])
                data = data.T
                somestr = "X Y1\n"
                f.write(somestr.encode('ascii'))
@@ -286,7 +340,7 @@ class GUI:
                print("File selected: " + dialog_origin.get_filename())
 
                f = open(dialog_origin.get_filename(), 'wb')
-               data = np.array([self.c.linex[0], self.c.linex[1], self.c.liney[1], self.c.linez[1]])
+               data = np.array([self.generator.linex[0], self.generator.linex[1], self.generator.liney[1], self.generator.linez[1]])
                data = data.T
                somestr = "X Y1 Y2 Y3\n"
                f.write(somestr.encode('ascii'))
@@ -323,7 +377,7 @@ class GUI:
         if response == Gtk.ResponseType.OK:
             print("Save clicked")
             print("File selected: " + dialog_graph.get_filename())
-            self.c.pb.savev(dialog_graph.get_filename(), "png", [], [])
+            self.generator.pb.savev(dialog_graph.get_filename(), "png", [], [])
 
         dialog_graph.destroy()
 
