@@ -12,52 +12,24 @@ class GUI:
     def __init__(self):
         self.i = 0
         self.window = Gtk.Window()
+        self.window.set_size_request(1100, 450)
+        self.window.set_icon_from_file('icon.png')
+        self.window.set_border_width(30)
+
         self.notebook = Gtk.Notebook()
 
         self.create_labels()
         self.set_labels_alignment()
+
 	self.create_entries()
         self.set_width_chars_for_entries()
 	self.store_entries_in_list()
-
-        self.window.set_size_request(1100, 450)
-        self.window.set_icon_from_file('icon.png')
-        self.window.set_border_width(30)
 
         self.create_notebook_page_MAIN()
         self.create_notebook_page_HELP()
         self.create_notebook_page_ABOUT()
 
-        self.entry_param_en.set_text("1")
-        self.entry_param_a0.set_text("4")
-        self.entry_param_g0.set_text("5")
-        self.entry_param_eg.set_text("4")
-        self.entry_param_ef.set_text("2")
-        self.entry_param_en.set_text("1,1,1,1")
-        self.entry_param_emin.set_text("1")
-        self.entry_param_emax.set_text("2")
-        self.entry_param_edn.set_text("0.1")
-        self.entry_param_ecmin.set_text("1")
-        self.entry_param_ecmax.set_text("2")
-        self.entry_param_ecdn.set_text("0.1")
-        self.entry_param_evmin.set_text("1")
-        self.entry_param_evmax.set_text("2")
-        self.entry_param_evdn.set_text("0.1")
-
-         # Parameters of the structure
-        self.entry_param_cp.set_text("1,1,1,1")
-        self.entry_param_cb.set_text("1,1,1,1")
-        self.entry_param_hh.set_text("1,1,1,1")
-        self.entry_param_lh.set_text("1,1,1,1")
-        self.entry_param_wsk.set_text("h,h,h,h")
-        self.entry_param_T.set_text("270")
-        self.entry_param_gamma.set_text("5")
-        self.entry_param_step_func_gamma.set_text("0.1")
-
-        # Effective masses section
-        self.entry_param_mee.set_text("4")
-        self.entry_param_mehh.set_text("4")
-        self.entry_param_melh.set_text("4")
+        self.fill_entries_for_debug()
 
         self.window.add(self.notebook)
         self.window.show_all()
@@ -80,131 +52,16 @@ class GUI:
 
         self.calculator = self.generator.calculator
 
-        self.empty_cnt = 0
-        self.not_a_number_cnt = 0
+        self.check_if_strings_in_entries_are_valid()
 
-        for row in list_store:
-            entry = list_store.get_value(row.iter, 2)
-
-            gt = entry.get_text()
-
-            if gt == "" or gt == "0":
-                self.empty_cnt += 1
-
-            es = list_store.get_value(row.iter, 1)
-
-            if es != "Entry,en" and es != "Entry,cp" and es != "Entry,hh" and es != "Entry,lh" \
-               and es != "Entry,wsk" and es != "Entry,cb":
-                try:
-                    tmp = float(gt)
-                except ValueError:
-                    self.not_a_number_cnt += 1
-                    print("'" + list_store.get_value(row.iter, 1) + "'" + " is not a number!")
-
-        if self.empty_cnt != 0:
-            dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
-                Gtk.ButtonsType.OK, "Values can't be empty/zero!")
-            dialog1.format_secondary_text(
-                "Some of your entries for parameters appears to be empty/zero. Please check it and type again")
-            dialog1.run()
-            dialog1.destroy()
-
-            return -1
-
-        if self.not_a_number_cnt != 0:
-            dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
-                Gtk.ButtonsType.OK, "Values can't be string!")
-            dialog1.format_secondary_text(
-                "Some of your entries are not a number. Please check it and type again")
-            dialog1.run()
-            dialog1.destroy()
-
-            return -1
-
-        self.calculator.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
-        self.calculator.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
-        self.calculator.params.CB = np.fromstring(self.entry_param_cb.get_text(), dtype=float, sep=',')
-        self.calculator.params.HH = np.fromstring(self.entry_param_hh.get_text(), dtype=float, sep=',')
-        self.calculator.params.LH = np.fromstring(self.entry_param_lh.get_text(), dtype=float, sep=',')
-        self.calculator.params.wsk = np.array(list(self.entry_param_wsk.get_text().split(',')))
-
-	print("Params wsk = " + str(self.calculator.params.wsk))
-        self.calculator.params.A0 = float(self.entry_param_a0.get_text())
-        self.calculator.params.g0 = float(self.entry_param_g0.get_text())
-        self.calculator.params.Eg = float(self.entry_param_eg.get_text())
-        self.calculator.params.Ef = float(self.entry_param_ef.get_text())
-        self.calculator.params.E = np.arange(float(self.entry_param_emin.get_text()),
-                                    float(self.entry_param_emax.get_text()),
-                                    float(self.entry_param_edn.get_text()))
-        self.calculator.params.Ec = np.arange(float(self.entry_param_ecmin.get_text()),
-                                    float(self.entry_param_ecmax.get_text()),
-                                    float(self.entry_param_ecdn.get_text()))
-        self.calculator.params.Ev = np.arange(float(self.entry_param_evmin.get_text()),
-                                    float(self.entry_param_evmax.get_text()),
-                                    float(self.entry_param_evdn.get_text()))
-        self.calculator.params.T = float(self.entry_param_T.get_text())
-        self.calculator.params.gamma = float(self.entry_param_gamma.get_text())
-        self.calculator.params.step_func_gamma = float(self.entry_param_step_func_gamma.get_text())
-        self.calculator.params.me = float(self.entry_param_mee.get_text())
-        self.calculator.params.mehh = float(self.entry_param_mehh.get_text())
-        self.calculator.params.melh = float(self.entry_param_melh.get_text())
-
-        self.calculator.params.LAMBDA = (1.24 / self.calculator.params.E)
+        self.get_strings_from_entries_and_update_params()
 
         self.frame1.remove(self.currentGraph)
         self.calculator.calculate_all()
 
         sc = self.spectrum_combobox.get_active()
 
-        if sc == 1:
-           self.generator.plot_widmo_absorption(self.calculator.params.E,
-                                                self.calculator.Abs1,
-                                                self.calculator.Abs2,
-                                                self.calculator.Abs3,
-                                                )
-           self.currentGraph = self.generator.generated_absorption
-        elif sc == 2:
-           self.generator.plot_widmo_pl_um(self.calculator.Widmo1,
-                                           self.calculator.Widmo2,
-                                           self.calculator.params.LAMBDA
-                                           )
-           self.currentGraph = self.generator.generated_pl_um
-        elif sc == 3:
-           self.generator.plot_widmo_pl_ev(self.calculator.Widmo1,
-                                   self.calculator.Widmo2,
-                                    self.calculator.params.LAMBDA,
-                                  )
-           self.currentGraph = self.generator.generated_pl_ev
-        elif sc == 4:
-           self.generator.plot_widmo_cbdos(self.calculator.params.Ec,
-                                            self.calculator.params.Ev,
-                                            self.calculator.dosCB
-                                            )
-           self.currentGraph = self.generator.generated_cbdos
-        elif sc == 5:
-           self.generator.plot_widmo_vbdos(self.calculator.params.Ev,
-                                           self.calculator.dosVB
-                                          )
-           self.currentGraph = self.generator.generated_vbdos
-        elif sc == 6:
-           self.generator.plot_widmo_hh_lh_dos(self.calculator.params.Ev,
-                                               self.calculator.dosHH,
-                                               self.calculator.dosLH,
-                                              )
-           self.currentGraph = self.generator.generated_hh_lh_dos
-        elif sc == 7:
-           self.generator.plot_widmo_jdos(self.calculator.JDOS,
-                                          self.calculator.JDOS2,
-                                          self.calculator.Hevisajd,
-                                         )
-           self.currentGraph = self.generator.generated_jdos
-        else:
-           dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
-               Gtk.ButtonsType.OK, "Wrong choice!")
-           dialog.format_secondary_text(
-               "You have not chosen any spectrum to generate. Please choose one and try again")
-           dialog.run()
-           dialog.destroy()
+        self.generate_plot_of_choice(sc)
 
         self.frame1.add(self.currentGraph)
         self.window.show_all()
@@ -920,3 +777,157 @@ All with pyGTK and using GTK3+.</span>")
             self.grid_page_main.attach_next_to(self.entry_readOwnFileForGraph, self.buttonExportToOrigin, Gtk.PositionType.TOP, 1, 1)
             self.grid_page_main.attach_next_to(self.check_if_graph_your_data, self.entry_readOwnFileForGraph, Gtk.PositionType.LEFT, 1, 1)
 
+    def check_if_strings_in_entries_are_valid(self):
+            self.empty_cnt = 0
+            self.not_a_number_cnt = 0
+
+            for row in list_store:
+                entry = list_store.get_value(row.iter, 2)
+
+                gt = entry.get_text()
+
+                if gt == "" or gt == "0":
+                    self.empty_cnt += 1
+
+                es = list_store.get_value(row.iter, 1)
+
+                if es != "Entry,en" and es != "Entry,cp" and es != "Entry,hh" and es != "Entry,lh" \
+                   and es != "Entry,wsk" and es != "Entry,cb":
+                    try:
+                        tmp = float(gt)
+                    except ValueError:
+                        self.not_a_number_cnt += 1
+                        print("'" + list_store.get_value(row.iter, 1) + "'" + " is not a number!")
+
+            if self.empty_cnt != 0:
+                dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+                    Gtk.ButtonsType.OK, "Values can't be empty/zero!")
+                dialog1.format_secondary_text(
+                    "Some of your entries for parameters appears to be empty/zero. Please check it and type again")
+                dialog1.run()
+                dialog1.destroy()
+
+                return -1
+
+            if self.not_a_number_cnt != 0:
+                dialog1 = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+                    Gtk.ButtonsType.OK, "Values can't be string!")
+                dialog1.format_secondary_text(
+                    "Some of your entries are not a number. Please check it and type again")
+                dialog1.run()
+                dialog1.destroy()
+
+                return -1
+
+    def fill_entries_for_debug(self):
+            self.entry_param_en.set_text("1")
+            self.entry_param_a0.set_text("4")
+            self.entry_param_g0.set_text("5")
+            self.entry_param_eg.set_text("4")
+            self.entry_param_ef.set_text("2")
+            self.entry_param_en.set_text("1,1,1,1")
+            self.entry_param_emin.set_text("1")
+            self.entry_param_emax.set_text("2")
+            self.entry_param_edn.set_text("0.1")
+            self.entry_param_ecmin.set_text("1")
+            self.entry_param_ecmax.set_text("2")
+            self.entry_param_ecdn.set_text("0.1")
+            self.entry_param_evmin.set_text("1")
+            self.entry_param_evmax.set_text("2")
+            self.entry_param_evdn.set_text("0.1")
+
+             # Parameters of the structure
+            self.entry_param_cp.set_text("1,1,1,1")
+            self.entry_param_cb.set_text("1,1,1,1")
+            self.entry_param_hh.set_text("1,1,1,1")
+            self.entry_param_lh.set_text("1,1,1,1")
+            self.entry_param_wsk.set_text("h,h,h,h")
+            self.entry_param_T.set_text("270")
+            self.entry_param_gamma.set_text("5")
+            self.entry_param_step_func_gamma.set_text("0.1")
+
+            # Effective masses section
+            self.entry_param_mee.set_text("4")
+            self.entry_param_mehh.set_text("4")
+            self.entry_param_melh.set_text("4")
+
+    def get_strings_from_entries_and_update_params(self):
+            self.calculator.params.En = np.fromstring(self.entry_param_en.get_text(), dtype=float, sep=',')
+            self.calculator.params.CP = np.fromstring(self.entry_param_cp.get_text(), dtype=float, sep=',')
+            self.calculator.params.CB = np.fromstring(self.entry_param_cb.get_text(), dtype=float, sep=',')
+            self.calculator.params.HH = np.fromstring(self.entry_param_hh.get_text(), dtype=float, sep=',')
+            self.calculator.params.LH = np.fromstring(self.entry_param_lh.get_text(), dtype=float, sep=',')
+            self.calculator.params.wsk = np.array(list(self.entry_param_wsk.get_text().split(',')))
+
+            self.calculator.params.A0 = float(self.entry_param_a0.get_text())
+            self.calculator.params.g0 = float(self.entry_param_g0.get_text())
+            self.calculator.params.Eg = float(self.entry_param_eg.get_text())
+            self.calculator.params.Ef = float(self.entry_param_ef.get_text())
+            self.calculator.params.E = np.arange(float(self.entry_param_emin.get_text()),
+                                        float(self.entry_param_emax.get_text()),
+                                        float(self.entry_param_edn.get_text()))
+            self.calculator.params.Ec = np.arange(float(self.entry_param_ecmin.get_text()),
+                                        float(self.entry_param_ecmax.get_text()),
+                                        float(self.entry_param_ecdn.get_text()))
+            self.calculator.params.Ev = np.arange(float(self.entry_param_evmin.get_text()),
+                                        float(self.entry_param_evmax.get_text()),
+                                        float(self.entry_param_evdn.get_text()))
+            self.calculator.params.T = float(self.entry_param_T.get_text())
+            self.calculator.params.gamma = float(self.entry_param_gamma.get_text())
+            self.calculator.params.step_func_gamma = float(self.entry_param_step_func_gamma.get_text())
+            self.calculator.params.me = float(self.entry_param_mee.get_text())
+            self.calculator.params.mehh = float(self.entry_param_mehh.get_text())
+            self.calculator.params.melh = float(self.entry_param_melh.get_text())
+
+            self.calculator.params.LAMBDA = (1.24 / self.calculator.params.E)
+
+    def generate_plot_of_choice(self, sc):
+            if sc == 1:
+               self.generator.plot_widmo_absorption(self.calculator.params.E,
+                                                    self.calculator.Abs1,
+                                                    self.calculator.Abs2,
+                                                    self.calculator.Abs3,
+                                                    )
+               self.currentGraph = self.generator.generated_absorption
+            elif sc == 2:
+               self.generator.plot_widmo_pl_um(self.calculator.Widmo1,
+                                               self.calculator.Widmo2,
+                                               self.calculator.params.LAMBDA
+                                               )
+               self.currentGraph = self.generator.generated_pl_um
+            elif sc == 3:
+               self.generator.plot_widmo_pl_ev(self.calculator.Widmo1,
+                                       self.calculator.Widmo2,
+                                        self.calculator.params.LAMBDA,
+                                      )
+               self.currentGraph = self.generator.generated_pl_ev
+            elif sc == 4:
+               self.generator.plot_widmo_cbdos(self.calculator.params.Ec,
+                                                self.calculator.params.Ev,
+                                                self.calculator.dosCB
+                                                )
+               self.currentGraph = self.generator.generated_cbdos
+            elif sc == 5:
+               self.generator.plot_widmo_vbdos(self.calculator.params.Ev,
+                                               self.calculator.dosVB
+                                              )
+               self.currentGraph = self.generator.generated_vbdos
+            elif sc == 6:
+               self.generator.plot_widmo_hh_lh_dos(self.calculator.params.Ev,
+                                                   self.calculator.dosHH,
+                                                   self.calculator.dosLH,
+                                                  )
+               self.currentGraph = self.generator.generated_hh_lh_dos
+            elif sc == 7:
+               self.generator.plot_widmo_jdos(self.calculator.JDOS,
+                                              self.calculator.JDOS2,
+                                              self.calculator.Hevisajd,
+                                             )
+               self.currentGraph = self.generator.generated_jdos
+            else:
+               dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.INFO,
+                   Gtk.ButtonsType.OK, "Wrong choice!")
+               dialog.format_secondary_text(
+                   "You have not chosen any spectrum to generate. Please choose one and try again")
+               dialog.run()
+               dialog.destroy()

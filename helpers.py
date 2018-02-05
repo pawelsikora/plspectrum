@@ -144,10 +144,9 @@ class Calculator:
                 self.Abs3 = self.Abs3 + g0 * CP[i] * masy_r[i] * \
                     Schodek(E - En[i])
 
-        def calculate_delta_cal(self):
+        def calculate_all_parameters(self):
             self.calculate_u_relh(self.params.me, self.params.melh)
             self.calculate_u_rehh(self.params.me, self.params.mehh)
-
             self.calculate_dosCB(self.params.g0,
                             self.params.me,
                             self.params.Ec,
@@ -268,7 +267,7 @@ class Calculator:
                 yield i
 
         def calculate_all(self):
-            self.calculate_delta_cal()
+            self.calculate_all_parameters()
             self.calculate_widmo_fd()
             self.calculate_widmo_boltzmann()
             self.calculate_widmo_planck()
