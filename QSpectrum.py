@@ -13,11 +13,12 @@ from helpers import *
 __author__ = "Pawel Sikora, Piotr Ruszala"
 __version__ = "0.1"
 
-class Spectrum_generator:
 
-    def __init__(self, file_with_measured_data = None):
+class Spectrum_generator:
+    def __init__(self, file_with_measured_data=None):
         self.f_measured_data = file_with_measured_data
         self.calculator = Calculator()
+
     def save_to_files(self, plik, plik2):
         self.plik = open(plik, 'w')
         self.plik2 = open(plik2, 'w')
@@ -33,13 +34,12 @@ class Spectrum_generator:
         self.plik2.close()
         self.plik.close()
 
-
     def plot_widmo_absorption(self, E, Abs1, Abs2, Abs3):
         plt.ylabel('A [j. w.]')
         plt.xlabel('Energy [eV]')
-        one = plt.plot(E, Abs1/max(Abs1), 'r', lw=2, label="one")
-        two = plt.plot(E, Abs2/max(Abs2), 'b', lw=2, label="two")
-        three = plt.plot(E, Abs3/max(Abs3), 'k', lw=2, label="three")
+        one = plt.plot(E, Abs1 / max(Abs1), 'r', lw=2, label="one")
+        two = plt.plot(E, Abs2 / max(Abs2), 'b', lw=2, label="two")
+        three = plt.plot(E, Abs3 / max(Abs3), 'k', lw=2, label="three")
 
         self.linex = one[0].get_data()
         self.liney = two[0].get_data()
@@ -47,7 +47,8 @@ class Spectrum_generator:
 
         plt.savefig("plot_absorption_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_absorption_tmp.png")
-        self.generated_absorption = Image.new_from_file("plot_absorption_tmp.png")
+        self.generated_absorption = Image.new_from_file(
+            "plot_absorption_tmp.png")
         plt.savefig("plot_absorption_tmp.png", dpi=200)
         plt.close()
 
@@ -133,13 +134,14 @@ class Spectrum_generator:
         plt.xlabel('Energy [eV]')
         data_plt_vb = plt.plot(Ev, dosHH        \
                     + abs(min(dosHH)), 'r', Ev, \
-		    dosLH + abs(min(dosLH)), 'b', lw=2)
+      dosLH + abs(min(dosLH)), 'b', lw=2)
 
         self.linex = data_plt_vb[0].get_data()
 
         plt.savefig("plot_hh_lh_dos_tmp.png", dpi=80)
         self.pb = Pixbuf.new_from_file("plot_hh_lh_dos_tmp.png")
-        self.generated_hh_lh_dos = Image.new_from_file("plot_hh_lh_dos_tmp.png")
+        self.generated_hh_lh_dos = Image.new_from_file(
+            "plot_hh_lh_dos_tmp.png")
         plt.savefig("plot_hh_lh_dos_tmp.png", dpi=200)
         plt.close()
 
@@ -172,6 +174,7 @@ class Spectrum_generator:
         self.generated_jdos = Image.new_from_file("plot_jdos_tmp.png")
         plt.savefig("plot_jdos_tmp.png", dpi=200)
         plt.close()
+
 
 if __name__ == "__main__":
 
