@@ -10,7 +10,7 @@ from gi.repository.GdkPixbuf import Pixbuf
 from gi.repository.Gtk import Image
 from helpers import *
 
-__author__ = "Piotr Ruszala"
+__author__ = "Pawel Sikora, Piotr Ruszala"
 __version__ = "0.1"
 
 class Spectrum_generator:
